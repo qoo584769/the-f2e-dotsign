@@ -4,7 +4,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/the-f2e-dotsign/',
   plugins: [
     react(),
     topLevelAwait({
