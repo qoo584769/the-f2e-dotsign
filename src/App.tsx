@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { FileContextProvider } from "./store/FileContext";
 
@@ -12,7 +12,7 @@ import NotFonudPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <FileContextProvider>
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}></Route>
@@ -25,7 +25,7 @@ function App() {
           <Route path="*" element={<NotFonudPage></NotFonudPage>}></Route>
         </Routes>
       </FileContextProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 {
