@@ -12,7 +12,7 @@ import NotFonudPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-    <BrowserRouter basename="/the-f2e-dotsign">
+    <BrowserRouter>
       <FileContextProvider>
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}></Route>
