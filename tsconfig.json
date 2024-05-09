@@ -21,7 +21,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "/dot-sign-react/",
+    "baseUrl": "https://qoo584769.github.io/dot-sign-react",
     "paths": {
       "@/*": [
         "src/*"
@@ -30,6 +30,8 @@
   },
   "include": [
     "src",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "src/**/*.d.ts"
   ],
   "references": [
