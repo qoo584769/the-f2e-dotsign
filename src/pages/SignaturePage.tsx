@@ -1,14 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { fabric } from "fabric";
 import * as pdfjsLib from "pdfjs-dist";
 import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-// pdfjsLib.GlobalWorkerOptions.workerSrc =
-// "../../pdfjs-dist/build/pdf.worker.min.mjs";
-// pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-//   "pdfjs-dist/build/pdf.worker.min.mjs",
-//   import.meta.url,
-// ).toString();
 
 import { useFileContext } from "../store/FileContext";
 
@@ -45,16 +39,34 @@ const SignaturePage = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   // const [signature, setSignature] = useState(false);
+  const [curPage, setCurPage] = useState(1);
   const [signList, setSignList] = useState([]);
   const [imgList, setImgList] = useState<any[]>([]);
   const [textList, setTextList] = useState<any[]>([]);
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
   const [checkedIcon, setCheckedIcon] = useState("簽名");
 
+  const previewPdfPages = useMemo(() => {
+    return Array(uploadInfo.totalPages)
+      .fill(0)
+      .map((_i) => React.createRef<HTMLCanvasElement>());
+  }, [uploadInfo.totalPages]);
+
   useEffect(() => {
-    // uploadHander();
+    if (!previewPdfPages[0]) return;
+    if (previewPdfPages[0].current !== null) {
+      previewPdfPages.forEach((_item, index) => {
+        // uploadHander(index + 1);
+        if (index === 0) index = 1;
+        renderPDF(Uint8Array.from(uploadInfo.typedarray), index);
+      });
+    }
+  }, [checkedIcon]);
+
+  useEffect(() => {
     const fc = new fabric.Canvas(fabricCanvasRef.current);
     setFabricCanvas(fc);
+
     return () => {
       fc.dispose();
     };
@@ -70,7 +82,7 @@ const SignaturePage = () => {
 
     const makeFabricCanvas = async () => {
       fabricCanvas.requestRenderAll();
-      const pdfData = await printPDF(uploadInfo.file);
+      const pdfData = await printPDF(uploadInfo.file, curPage);
       const pdfImg = await pdfToImg(pdfData);
       if (pdfImg.width !== undefined && pdfImg.height !== undefined) {
         fabricCanvas.setWidth(pdfImg.width / window.devicePixelRatio);
@@ -115,13 +127,13 @@ const SignaturePage = () => {
   };
 
   // 將上傳的PDF轉乘canvas
-  const printPDF = async (pdfData: any) => {
+  const printPDF = async (pdfData: any, curPage: number) => {
     const Base64Prefix = "data:application/pdf;base64,";
     pdfData = await readBlob(pdfData);
     // 將 base64 中的前綴刪去，並進行解碼
     const data = atob(pdfData.substring(Base64Prefix.length));
     const pdfDoc = await pdfjsLib.getDocument({ data }).promise;
-    const pdfPage = await pdfDoc.getPage(1);
+    const pdfPage = await pdfDoc.getPage(curPage);
 
     // 設定尺寸
     const scale = 2;
@@ -248,30 +260,34 @@ const SignaturePage = () => {
     setFinishPDF(image);
   };
   // -------------------------------
-  // const readerPDF = async (data: any) => {
-  //   const pdfDoc = await pdfjsLib.getDocument(data).promise;
-  //   const pdfPage = await pdfDoc.getPage(1);
-  //   const viewport = pdfPage.getViewport({ scale: 1 });
-  //   signCanvasRef.current.width = viewport.width;
-  //   signCanvasRef.current.height = viewport.height;
-  //   const canvasContext = signCanvasRef.current.getContext("2d");
-  //   pdfPage.render({ canvasContext, viewport });
-  // };
+  const renderPDF = async (data: any, curPage: any) => {
+    const pdfDoc = await pdfjsLib.getDocument(data).promise;
+    const pdfPage = await pdfDoc.getPage(curPage);
+    const viewport = pdfPage.getViewport({ scale: 0.3 });
+    (previewPdfPages[curPage - 1].current as any).width = 200;
+    (previewPdfPages[curPage - 1].current as any).height = 150;
+    const canvasContext = (
+      previewPdfPages[curPage - 1].current as any
+    ).getContext("2d");
+    pdfPage.render({ canvasContext, viewport });
+  };
 
-  // const uploadHander = () => {
-  // 取得上傳PDF
-  // const [file] = uploadRef.current.files;
-  // const file = uploadInfo.file;
-  // if (file === undefined) return;
+  // const uploadHander = (curPage: any) => {
+  //   // 取得上傳PDF
+  //   const file = uploadInfo.file;
+  //   if (file === undefined) return;
 
-  // 產生fileReader物件
-  // const fileReader = new FileReader();
-  // 處理資料
-  //   fileReader.readAsArrayBuffer(file);
+  //   產生fileReader物件
+  //   const fileReader = new FileReader();
+  //   處理資料
+  //   fileReader.readAsArrayBuffer(file as any);
 
   //   fileReader.onloadend = async () => {
-  //     const typedarray = new Uint8Array(fileReader.result);
-  //     await readerPDF(typedarray);
+  //     const typedarray = new Uint8Array(fileReader.result as any);
+  //     console.log(typedarray);
+  //     console.log(uploadInfo.typedarray);
+
+  //     await renderPDF(typedarray, curPage);
   //   };
   // };
 
@@ -335,7 +351,7 @@ const SignaturePage = () => {
             {signList.length === 0 ? (
               <>
                 <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="">新增簽名檔</span>
+                <span className="mt-4">新增簽名檔</span>
               </>
             ) : (
               <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
@@ -368,7 +384,7 @@ const SignaturePage = () => {
             {imgList.length === 0 ? (
               <>
                 <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="">新增圖片</span>
+                <span className="mt-4">新增圖片</span>
               </>
             ) : (
               <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
@@ -382,7 +398,16 @@ const SignaturePage = () => {
   // 文字列表
   const TextCollection = () => {
     const [inputValue, setInputValue] = useState("");
+    const handleTextChange = (e: any) => {
+      setInputValue(e.target.value);
+    };
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        saveText();
+      }
+    };
     const saveText = () => {
+      if (!inputValue.length) return;
       setTextList((pre: any) => {
         return [...pre, inputValue];
       });
@@ -397,57 +422,84 @@ const SignaturePage = () => {
       >
         {textList ? (
           <div className="overflow-y-scroll">
-            {textList !== undefined
-              ? textList.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="relative border flex items-center bg-white mb-3"
-                    >
-                      <img
-                        src={closeIcon}
-                        alt=""
-                        className="absolute right-0 top-0 bottom-0 cursor-pointer"
-                        onClick={() => {
-                          removeText(index);
-                        }}
-                      />
-                      <button
-                        className="w-full text-left py-2 pl-3"
-                        onClick={() => {
-                          addText(item, fabricCanvas as fabric.Canvas);
-                        }}
-                      >
-                        {item}
-                      </button>
-                    </div>
-                  );
-                })
-              : null}
+            {textList.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="relative border flex items-center bg-white mb-3"
+                >
+                  <img
+                    src={closeIcon}
+                    alt=""
+                    className="absolute right-0 top-0 bottom-0 cursor-pointer"
+                    onClick={() => {
+                      removeText(index);
+                    }}
+                  />
+                  <button
+                    className="w-full text-left py-2 pl-3"
+                    onClick={() => {
+                      addText(item, fabricCanvas as fabric.Canvas);
+                    }}
+                  >
+                    {item}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         ) : null}
         <div className="flex flex-col items-center mt-5">
           <input
             type="text"
-            name=""
             id="addNewText"
-            className=""
-            onChange={(e) => setInputValue(e.target.value)}
+            className="w-full px-4 py-1 outline-none mb-3"
+            onChange={(e) => handleTextChange(e)}
+            onKeyDown={(e) => {
+              handleKeyDown(e);
+            }}
+            placeholder="請輸入文字"
           />
-          <button className="" onClick={saveText}>
-            確定
-          </button>
-          <label htmlFor="addNewText" className="flex flex-col items-center">
-            {textList.length === 0 ? (
+
+          <label
+            htmlFor="addNewText"
+            className="flex flex-col items-center cursor-pointer"
+            onClick={saveText}
+          >
+            {!textList.length ? (
               <>
                 <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="">新增文字</span>
+                <span className="mt-4">新增文字</span>
               </>
             ) : (
               <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
             )}
           </label>
         </div>
+      </div>
+    );
+  };
+
+  // 多頁PDF列表
+  const PDFPageCollection = () => {
+    return (
+      <div
+        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
+        style={{
+          justifyContent: !textList.length ? "center" : "",
+        }}
+      >
+        {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
+          return (
+            <canvas
+              ref={previewPdfPages[index]}
+              className=""
+              onClick={() => {
+                setCurPage(index + 1);
+              }}
+            ></canvas>
+          );
+        })}
       </div>
     );
   };
@@ -472,6 +524,7 @@ const SignaturePage = () => {
       簽名: <SignatureCollection></SignatureCollection>,
       圖片: <ImgCollection></ImgCollection>,
       文字: <TextCollection></TextCollection>,
+      頁數: <PDFPageCollection></PDFPageCollection>,
     };
     return getProps(collection, collectionName);
   };

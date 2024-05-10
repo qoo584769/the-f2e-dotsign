@@ -1,10 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-// import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
-// pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-// pdfjsLib.GlobalWorkerOptions.workerSrc =
-//   "../../pdfjs-dist/build/pdf.worker.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url,
@@ -26,17 +22,16 @@ const UploadPage = () => {
   const { uploadInfo, setUploadInfo } = useFileContext();
 
   const uploadRef = useRef<HTMLInputElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [isHover, setIsHover] = useState(false);
   const [uploaded, setUploaded] = useState(false);
 
-  const readerPDF = async (data: any) => {
+  const renderPDF = async (data: any) => {
     const pdfDoc = await pdfjsLib.getDocument(data).promise;
     setUploadInfo((pre: any) => ({
       ...pre,
       totalPages: pdfDoc.numPages,
-      typedarray: data,
     }));
     const pdfPage = await pdfDoc.getPage(1);
     const viewport = pdfPage.getViewport({ scale: 0.3 });
@@ -55,28 +50,23 @@ const UploadPage = () => {
   const uploadHander = () => {
     if (uploadRef.current !== null) {
       const { files } = uploadRef.current;
-      let file = {};
-      if (files !== null) {
-        file = files[0];
-      }
-
-      // 取得上傳PDF
-      // if (file === undefined) return;
 
       // 產生fileReader物件
       const fileReader = new FileReader();
       // 處理資料
-      // fileReader.readAsArrayBuffer(file);
       if (files !== null) {
         fileReader.readAsArrayBuffer(files[0]);
+        setUploaded(true);
+        fileReader.onload = async () => {
+          const typedarray = new Uint8Array(fileReader.result as any);
+          setUploadInfo((pre: any) => ({
+            ...pre,
+            file: files[0],
+            typedarray: Array.from(typedarray),
+          }));
+          await renderPDF(typedarray);
+        };
       }
-
-      setUploaded(true);
-      fileReader.onload = async () => {
-        const typedarray = new Uint8Array(fileReader.result as any);
-        setUploadInfo((pre: any) => ({ ...pre, file, typedarray }));
-        await readerPDF(typedarray);
-      };
     }
   };
 
@@ -121,8 +111,8 @@ const UploadPage = () => {
                 <input
                   type="text"
                   id="fileName"
-                  className="w-[400px] outline-none border-none"
-                  value={uploadInfo?.file.name}
+                  className="w-[400px] outline-none border-none bg-transparent"
+                  placeholder={uploadInfo?.file.name}
                 />
                 <img src={editIcon} alt="" className="" />
               </p>

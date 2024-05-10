@@ -5,7 +5,11 @@ interface ProviderProps {
   children?: React.ReactNode;
 }
 interface FileContext {
-  uploadInfo: { file: { name?: "" }; totalPages?: "" };
+  uploadInfo: {
+    file: { name?: "" };
+    totalPages?: number | string | null;
+    typedarray?: any;
+  };
   setUploadInfo: React.Dispatch<React.SetStateAction<{ file: {} }>>;
   finishPDF: string;
   setFinishPDF: React.Dispatch<React.SetStateAction<string>>;
