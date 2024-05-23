@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { useAlertStore } from "../../store/useAlertStore";
+
 import penBlack from "../../assets/icon/ic_color_black.svg";
 import penBlack_h from "../../assets/icon/ic_color_black_h.svg";
 import penBlue from "../../assets/icon/ic_color_blue.svg";
@@ -12,17 +14,20 @@ import trashIcon_h from "../../assets/icon/ic_trash_h.svg";
 interface NewSignModalProps {
   children?: React.ReactNode;
   closeModal(): void;
+  signList: string[];
   setSignList: any;
 }
 
 const NewSignModal: React.FC<NewSignModalProps> = ({
   closeModal,
+  signList,
   setSignList,
 }) => {
+  const { setAlertData } = useAlertStore();
+
   const signCanvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
-  // const [src, setSrc] = useState("");
 
   const [isPainting, setIsPainting] = useState(false);
   const [penColor, setPenColor] = useState("black");
@@ -78,15 +83,21 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
     (canvas as HTMLCanvasElement).toBlob(
       (blob: any) => {
         const url = URL.createObjectURL(blob);
-        setSignList((pre: any[]) => {
-          return [...pre, url];
-        });
+        setSignList([...signList, url]);
+        // setSignList((pre: any[]) => {
+        //   return [...pre, url];
+        // });
       },
       "image/png",
       1,
     );
 
     closeModal();
+    const alertData = {
+      msg: "新增簽名檔成功",
+      showAlert: true,
+    };
+    setAlertData(alertData);
   };
   const changePenColor = (color = "black") => {
     if (color === "trash") {

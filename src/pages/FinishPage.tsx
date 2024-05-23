@@ -5,22 +5,22 @@ import Navbar from "../components/Navbar/Navbar";
 import FolderLayout from "../components/Folder/FolderLayout";
 import FolderList from "../components/Folder/FolderList";
 
-import { useFileContext } from "../store/FileContext";
+import { useFinalPDF } from "../store/useFileStore";
 
 const FinishPage = () => {
-  const { finishPDF } = useFileContext();
+  const { completedPDF } = useFinalPDF();
 
   const download = () => {
     const pdf = new jsPDF();
     const w = pdf.internal.pageSize.width;
     const h = pdf.internal.pageSize.height;
-    pdf.addImage(finishPDF as string, "png", 0, 0, w, h);
+    pdf.addImage(completedPDF, "png", 0, 0, w, h);
     pdf.save("download.pdf");
   };
 
   return (
     <Container>
-      <Navbar></Navbar>
+      <Navbar step="complete"></Navbar>
       <FolderLayout>
         <FolderList
           title="簽署完成"
@@ -32,7 +32,7 @@ const FinishPage = () => {
         <div className="flex-grow overflow-hidden mt-5">
           <div className="bg-[#bbb] max-w-[80%] flex flex-col h-full items-center m-auto">
             <div className="w-fit p-10 h-full overflow-scroll">
-              <img src={finishPDF} alt="" className="block m-auto" />
+              <img src={completedPDF} alt="" className="block m-auto" />
             </div>
           </div>
         </div>

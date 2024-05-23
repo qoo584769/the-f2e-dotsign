@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import downloadIcon from "../../assets/icon/ic_download.svg";
+import leftArr from "../../assets/icon/left_arr.svg";
+import rightArrActive from "../../assets/icon/right_arr_active.svg";
+import rightArrDisabled from "../../assets/icon/right_arr_disabled.svg";
+import fileIcon from "../../assets/icon/ic_file_h.svg";
+import archiveIcon from "../../assets/icon/ic_archive_h.svg";
+import trashIcon from "../../assets/icon/ic_trash_h.svg";
 import Button from "../Button/Button";
+
 interface FolderHeaderProps {
+  children?: React.ReactNode;
   title?: React.ReactNode;
   next?: Boolean;
   prePath: String;
@@ -13,6 +21,7 @@ interface FolderHeaderProps {
 }
 
 const FolderHeader: React.FC<FolderHeaderProps> = ({
+  children,
   title,
   next,
   prePath,
@@ -22,9 +31,22 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
 }) => {
   if (title === "我的文件") {
     return (
-      <h2 className="text-3xl text-[#1e1e1e] border-b-2 border-b-[#B7EC5D] px-4 pb-4">
-        {title}
-      </h2>
+      <div className="">
+        <h2 className="text-3xl text-[#1e1e1e]  px-4 pb-4">{title}</h2>
+        <div className="border-b-2 border-b-[#B7EC5D]"></div>
+        {children}
+        {/* <ul className="absolute flex flex-col right-[100%]">
+          <li className="w-max">
+            <img src={fileIcon} alt="" className="" />
+          </li>
+          <li className="w-max">
+            <img src={archiveIcon} alt="" className="" />
+          </li>
+          <li className="w-max">
+            <img src={trashIcon} alt="" className="" />
+          </li>
+        </ul> */}
+      </div>
     );
   }
   const [isOpen, setIsOpen] = useState(false);
@@ -68,9 +90,9 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
     if (nextPath.nextPath === "finish") {
       return (
         <Button state="active">
-          <div className="" onClick={openModal}>
-            <span className="">下一頁</span>
-            <span className="text-2xl">&rarr;</span>
+          <div className="flex justify-center items-center" onClick={openModal}>
+            <span className="mr-[10px]">下一步</span>
+            <img src={rightArrActive} alt="" className="" />
           </div>
         </Button>
       );
@@ -78,8 +100,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
     return (
       <Link to={`/${nextPath.nextPath}`}>
         <Button state="active">
-          <span className="">下一頁</span>
-          <span className="text-2xl">&rarr;</span>
+          <span className="mr-[10px]">下一步</span>
+          <img src={rightArrActive} alt="" className="" />
         </Button>
       </Link>
     );
@@ -91,7 +113,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
       <div className="border-b-2 border-b-[#B7EC5D]  px-4 pb-4 flex justify-between items-center">
         <Link to={`/${prePath}`}>
           <Button state="none">
-            &larr; <span className="">上一頁</span>
+            <img src={leftArr} alt="" className="" />
+            <span className="ml-[10px]">上一步</span>
           </Button>
         </Link>
         <h2 className="text-3xl text-[#1e1e1e]">{title}</h2>
@@ -105,10 +128,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
               </button>
             ) : (
               <Button state="disabled">
-                <>
-                  <span className="">下一頁</span>
-                  <span className="text-2xl">&rarr;</span>
-                </>
+                <span className="mr-[10px]">下一步</span>
+                <img src={rightArrDisabled} alt="" className="" />
               </Button>
             )}
           </>

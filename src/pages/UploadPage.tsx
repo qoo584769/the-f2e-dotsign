@@ -6,7 +6,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-import { useFileContext } from "../store/FileContext";
+import { useFileStore } from "../store/useFileStore";
+import { useAlertStore } from "../store/useAlertStore";
 
 import Container from "../utils/Container";
 import Navbar from "../components/Navbar/Navbar";
@@ -19,7 +20,8 @@ import closeIcon from "../assets/icon/ic_close_s.svg";
 import closeIcon_h from "../assets/icon/ic_close_s_h.svg";
 
 const UploadPage = () => {
-  const { uploadInfo, setUploadInfo } = useFileContext();
+  const { uploadInfo, setUploadInfo } = useFileStore();
+  const { setAlertData } = useAlertStore();
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -29,10 +31,11 @@ const UploadPage = () => {
 
   const renderPDF = async (data: any) => {
     const pdfDoc = await pdfjsLib.getDocument(data).promise;
-    setUploadInfo((pre: any) => ({
-      ...pre,
+
+    setUploadInfo({
       totalPages: pdfDoc.numPages,
-    }));
+    });
+
     const pdfPage = await pdfDoc.getPage(1);
     const viewport = pdfPage.getViewport({ scale: 0.3 });
     const canvas = canvasRef.current;
@@ -44,35 +47,99 @@ const UploadPage = () => {
         canvasContext: canvasContext as CanvasRenderingContext2D,
         viewport,
       });
+      const alertData = {
+        msg: "檔案上傳成功",
+        showAlert: true,
+      };
+      setAlertData(alertData);
     }
   };
 
   const uploadHander = () => {
     if (uploadRef.current !== null) {
       const { files } = uploadRef.current;
-
       // 產生fileReader物件
       const fileReader = new FileReader();
       // 處理資料
       if (files !== null) {
+        const fileType = "application/pdf";
+        if (!files[0].type.match(fileType)) {
+          const alertData = {
+            msg: "檔案格式錯誤",
+            showAlert: true,
+          };
+          setAlertData(alertData);
+          return;
+        }
+        if (files[0].size > 20 * 1024 * 1024) {
+          const alertData = {
+            msg: "檔案過大",
+            showAlert: true,
+          };
+          setAlertData(alertData);
+          return;
+        }
         fileReader.readAsArrayBuffer(files[0]);
         setUploaded(true);
         fileReader.onload = async () => {
           const typedarray = new Uint8Array(fileReader.result as any);
-          setUploadInfo((pre: any) => ({
-            ...pre,
+
+          setUploadInfo({
             file: files[0],
             typedarray: Array.from(typedarray),
-          }));
+          });
+
           await renderPDF(typedarray);
         };
       }
     }
   };
 
+  const handleDragEnter = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDragOver = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDrop = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { dataTransfer } = e;
+    const files = dataTransfer?.files;
+
+    if (files[0].size > 20 * 1024 * 1024) {
+      const alertData = {
+        msg: "檔案過大",
+        showAlert: true,
+      };
+      setAlertData(alertData);
+      return;
+    }
+
+    // 產生fileReader物件
+    const fileReader = new FileReader();
+    // 處理資料
+    if (files !== null) {
+      fileReader.readAsArrayBuffer(files[0]);
+      setUploaded(true);
+      fileReader.onload = async () => {
+        const typedarray = new Uint8Array(fileReader.result as any);
+
+        setUploadInfo({
+          file: files[0],
+          typedarray: Array.from(typedarray),
+        });
+
+        await renderPDF(typedarray);
+      };
+    }
+  };
+
   return (
     <Container>
-      <Navbar></Navbar>
+      <Navbar step="upload"></Navbar>
       <FolderLayout>
         <FolderList
           title="上傳檔案"
@@ -102,7 +169,8 @@ const UploadPage = () => {
                 <canvas ref={canvasRef} className=""></canvas>
               </div>
 
-              <span className="mt-6">{uploadInfo?.file.name}</span>
+              <span className="mt-6">{uploadInfo?.file?.name}</span>
+              {/* <span className="mt-6">{uploadInfo?.file.name}</span> */}
               <span className="mt-1">{uploadInfo?.totalPages} 頁</span>
               <label htmlFor="fileName" className="mt-10">
                 專案名稱
@@ -112,13 +180,18 @@ const UploadPage = () => {
                   type="text"
                   id="fileName"
                   className="w-[400px] outline-none border-none bg-transparent"
-                  placeholder={uploadInfo?.file.name}
+                  placeholder={uploadInfo.file?.name || ""}
                 />
                 <img src={editIcon} alt="" className="" />
               </p>
             </div>
           ) : (
-            <div className="w-full h-full flex flex-col justify-center items-center border border-[#4d4d4d] border-dashed rounded-[20px]">
+            <div
+              className="w-full h-full flex flex-col justify-center items-center border border-[#4d4d4d] border-dashed rounded-[20px]"
+              onDrop={(e) => handleDrop(e)}
+              onDragOver={(e) => handleDragOver(e)}
+              onDragEnter={(e) => handleDragEnter(e)}
+            >
               <img src={imgPhoto} alt="" className="block mb-5" />
               <input
                 type="file"
