@@ -32,7 +32,7 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
   if (title === "我的文件") {
     return (
       <div className="">
-        <h2 className="text-3xl text-[#1e1e1e]  px-4 pb-4">{title}</h2>
+        <h2 className="text-3xl text-[#1e1e1e] px-4 pb-1 md:pb-4">{title}</h2>
         <div className="border-b-2 border-b-[#B7EC5D]"></div>
         {children}
         {/* <ul className="absolute flex flex-col right-[100%]">

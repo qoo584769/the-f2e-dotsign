@@ -250,9 +250,6 @@ const SignaturePage = () => {
   };
 
   const finalPDF = () => {
-    console.log(fabricCanvas);
-    console.log(uploadInfo);
-
     const image = (fabricCanvas as fabric.Canvas).toDataURL({ format: "png" });
     const data = {
       pdf: image,
@@ -573,8 +570,8 @@ const SignaturePage = () => {
         ></FolderList>
 
         <div className="flex-grow grid grid-cols-12 gap-x-5 overflow-hidden">
-          <div className="border-r-2 border-[rgb(183,236,93)] col-span-3 pr-5 flex flex-col overflow-hidden">
-            {/* 選擇插入工具 */}
+          <div className="hidden border-r-2 border-[rgb(183,236,93)] col-span-3 pr-5 md:flex flex-col overflow-hidden">
+            {/* 選擇工具 */}
             <div className="flex justify-between text-center mt-5 mb-4 mx-6">
               {iconArr.map((item, index) => (
                 <div key={index} className="">
@@ -603,7 +600,31 @@ const SignaturePage = () => {
             {collectionSelector(checkedIcon)}
           </div>
 
-          <div className="col-span-9 max-w-[70%] mt-6 mb-1 m-auto overflow-scroll">
+          <div className="flex col-span-12 justify-evenly md:hidden">
+            {iconArr.map((item, index) => (
+              <div key={index} className="">
+                <input
+                  name="iconRadio"
+                  type="radio"
+                  id={item.icon}
+                  value={item.text}
+                  className="hidden"
+                  onChange={(e) => setCheckedIcon(e.target.value)}
+                />
+                <label htmlFor={item.icon} className="cursor-pointer">
+                  <img
+                    src={
+                      item.text !== checkedIcon ? item.icon : item.iconOnCheck
+                    }
+                    alt=""
+                    className=""
+                  />
+                </label>
+              </div>
+            ))}
+          </div>
+
+          <div className="col-span-12 max-w-[90%] md:col-span-9 md:max-w-[70%] mt-6 mb-1 m-auto overflow-scroll">
             <div className="bg-[#b3b3b3] w-fit px-12 py-10 mx-auto">
               <canvas ref={fabricCanvasRef} id="canvas" className=""></canvas>
             </div>

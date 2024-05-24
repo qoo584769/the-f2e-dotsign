@@ -15,7 +15,12 @@ const Navbar: React.FC<NavbarProps> = ({ step }) => {
         <div className="logo w-[220px] py-2">
           <img src={logo} alt="LOGO" className="" />
         </div>
-        {step !== "home" && <Processbar step={step}></Processbar>}
+        <div className="absolute top-[100px] left-0 translate-x-1/4 md:hidden">
+          {step !== "home" && <Processbar step={step}></Processbar>}
+        </div>
+        <div className="sm:hidden md:block">
+          {step !== "home" && <Processbar step={step}></Processbar>}
+        </div>
         <div className="userIcon">
           <img src={userIcon} alt="userIcon" className="" />
         </div>
