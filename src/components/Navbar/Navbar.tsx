@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ step }) => {
         <div className="absolute top-[100px] left-0 right-0 m-auto ranslate-x-1/4 md:hidden">
           {step !== "home" && <Processbar step={step}></Processbar>}
         </div>
-        <div className="hidden md:block">
+        <div className="hidden md:block fixed left-2/4 -translate-x-2/4">
           {step !== "home" && <Processbar step={step}></Processbar>}
         </div>
         <div className="userIcon">

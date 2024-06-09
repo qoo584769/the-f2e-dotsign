@@ -76,8 +76,6 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
       img.top = 300;
       img.scaleX = 0.5;
       img.scaleY = 0.5;
-      // img.scaleToWidth(100);
-      // img.scaleToHeight(100);
       fabricCanvas.add(img);
     });
     fabricCanvas.renderAll();
@@ -92,9 +90,6 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
       showAlert: true,
     };
     setAlertData(alertData);
-    // setSignList((pre) => {
-    //   return pre.filter((_item, index) => index !== id);
-    // });
   };
 
   const showModal = () => {
@@ -127,7 +122,10 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
             <div className="overflow-y-scroll">
               {signList.map((item: any, index: any) => {
                 return (
-                  <div key={index} className="relative">
+                  <div
+                    key={index}
+                    className="relative bg-white m-4 rounded-3xl"
+                  >
                     <img
                       src={closeIcon}
                       alt=""
@@ -140,10 +138,11 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
                       key={index}
                       src={item}
                       alt=""
-                      className="block mb-2 bg-white"
-                      onClick={() =>
-                        addSignature(item, fabricCanvas as fabric.Canvas)
-                      }
+                      className="block mb-2 m-auto"
+                      onClick={() => [
+                        addSignature(item, fabricCanvas as fabric.Canvas),
+                        closeSignModal(),
+                      ]}
                     />
                   </div>
                 );
@@ -188,7 +187,7 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
           <div className="overflow-y-scroll">
             {signList.map((item: any, index: any) => {
               return (
-                <div key={index} className="relative">
+                <div key={index} className="relative rounded-3xl">
                   <img
                     src={closeIcon}
                     alt=""
@@ -201,7 +200,7 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
                     key={index}
                     src={item}
                     alt=""
-                    className="block mb-2 bg-white"
+                    className="block mb-4 bg-white rounded-3xl"
                     onClick={() =>
                       addSignature(item, fabricCanvas as fabric.Canvas)
                     }

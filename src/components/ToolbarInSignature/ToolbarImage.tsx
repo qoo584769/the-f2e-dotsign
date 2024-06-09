@@ -22,7 +22,6 @@ const ImgCollection: React.FC<SignaturePageProps> = ({
 }) => {
   const { imgList, setImgList } = useToolbarStore();
   const { setAlertData } = useAlertStore();
-  // const [imgList, setImgList] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   // PDF放上圖片
@@ -34,12 +33,6 @@ const ImgCollection: React.FC<SignaturePageProps> = ({
         scaleX: 0.2,
         scaleY: 0.2,
       });
-      // img.top = 300;
-      // img.left = 50;
-      // img.scaleX = 0.2;
-      // img.scaleY = 0.2;
-      // img.scaleToWidth(100);
-      // img.scaleToHeight(100);
       fabricCanvas.add(oImg);
     });
     fabricCanvas.renderAll();
@@ -54,9 +47,6 @@ const ImgCollection: React.FC<SignaturePageProps> = ({
       showAlert: true,
     };
     setAlertData(alertData);
-    // setImgList((pre) => {
-    //   return pre.filter((_item, index) => index !== id);
-    // });
   };
 
   const toggleModal = () => {
@@ -99,9 +89,10 @@ const ImgCollection: React.FC<SignaturePageProps> = ({
                       src={item}
                       alt=""
                       className="block mb-2 bg-white"
-                      onClick={() =>
-                        addImage(item, fabricCanvas as fabric.Canvas)
-                      }
+                      onClick={() => {
+                        addImage(item, fabricCanvas as fabric.Canvas),
+                          closeImgModal();
+                      }}
                     />
                   </div>
                 );
@@ -172,26 +163,6 @@ const ImgCollection: React.FC<SignaturePageProps> = ({
         ) : null}
 
         <div className="flex flex-col items-center mt-5">
-          {/* <input
-            type="file"
-            name=""
-            id="uploadImg"
-            accept="image/*"
-            className="hidden"
-            ref={imgRef}
-            onChange={handleUpload}
-          />
-          <label htmlFor="uploadImg" className="flex flex-col items-center">
-            {imgList.length === 0 ? (
-              <>
-                <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="mt-4">新增圖片</span>
-              </>
-            ) : (
-              <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
-            )}
-          </label> */}
-
           <label
             className="flex flex-col items-center cursor-pointer"
             onClick={toggleModal}

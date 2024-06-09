@@ -200,7 +200,6 @@ const SignaturePage = () => {
     );
   };
 
-  // temp
   // 左側多頁PDF列表
   const PDFPageCollection = () => {
     return (
@@ -267,7 +266,6 @@ const SignaturePage = () => {
       </>
     );
   };
-  // temp
 
   const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
     return obj[key];
@@ -275,14 +273,12 @@ const SignaturePage = () => {
 
   const collectionSelector = (collectionName: any) => {
     const collection = {
-      // 簽名: <SignatureCollection></SignatureCollection>,
       簽名: (
         <SignatureCollection
           fabricCanvas={fabricCanvas}
           closeSignModal={closeModal}
         ></SignatureCollection>
       ),
-      // 圖片: <ImgCollection></ImgCollection>,
       圖片: (
         <ImgCollection
           fabricCanvas={fabricCanvas}
@@ -295,7 +291,6 @@ const SignaturePage = () => {
           closeTextModal={closeModal}
         ></TextCollection>
       ),
-      // 文字: <TextCollection></TextCollection>,
       頁數: <PDFPageCollection></PDFPageCollection>,
     };
     return getProps(collection, collectionName);

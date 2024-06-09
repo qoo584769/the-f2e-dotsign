@@ -87,7 +87,8 @@ const TextCollection: React.FC<SignaturePageProps> = ({
                     <button
                       className="w-full text-left py-2 pl-3 whitespace-pre-wrap"
                       onClick={() => {
-                        addText(item, fabricCanvas as fabric.Canvas);
+                        addText(item, fabricCanvas as fabric.Canvas),
+                          closeTextModal();
                       }}
                     >
                       {item}

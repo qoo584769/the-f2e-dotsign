@@ -130,14 +130,21 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
 
   // 設定初始化簽名畫布
   useEffect(() => {
+    const w = window.innerWidth;
     const c = signCanvasRef.current;
+    if (w > 768) {
+      (c as HTMLCanvasElement).width = 460;
+      (c as HTMLCanvasElement).height = 250;
+    } else {
+      (c as HTMLCanvasElement).width = 300;
+      (c as HTMLCanvasElement).height = 180;
+    }
     setCanvas(c);
     if (c) setCtx(c.getContext("2d"));
-  }, []);
+  }, [window.innerWidth]);
 
   return (
     <div className="fixed w-full h-full top-0 left-0 transition-all bg-black/50 flex items-center justify-center z-20">
-      {/* <div className="bg-white px-8 py-6 w-fit rounded-3xl flex flex-col justify-center items-center"> */}
       <div className="w-[90%] max-w-[530px] min-h-[261px] px-8 pt-4 pb-7 rounded-[40px] flex flex-col justify-between bg-white">
         <div className="w-full text-center pb-4 border-b border-b-[#B7EC5D]">
           建立簽名檔
@@ -146,21 +153,18 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
           <div className="mb-3">
             <PenColors></PenColors>
           </div>
-          <div className="w-full md:max-w-[300px]">
-            <canvas
-              ref={signCanvasRef}
-              height={300}
-              onTouchStart={startPosition}
-              onTouchEnd={finishPosition}
-              onTouchCancel={finishPosition}
-              onTouchMove={drow}
-              onMouseDown={startPosition}
-              onMouseUp={finishPosition}
-              onMouseLeave={finishPosition}
-              onMouseMove={drow}
-              className="w-full h-full border rounded-2xl border-[#B3B3B3] bg-[#F5F5F5]"
-            ></canvas>
-          </div>
+          <canvas
+            ref={signCanvasRef}
+            onTouchStart={startPosition}
+            onTouchEnd={finishPosition}
+            onTouchCancel={finishPosition}
+            onTouchMove={drow}
+            onMouseDown={startPosition}
+            onMouseUp={finishPosition}
+            onMouseLeave={finishPosition}
+            onMouseMove={drow}
+            className="border rounded-2xl border-[#B3B3B3] bg-[#F5F5F5]"
+          ></canvas>
         </div>
         <div className="grid gap-5 grid-cols-2 mt-10 mb-4">
           <button

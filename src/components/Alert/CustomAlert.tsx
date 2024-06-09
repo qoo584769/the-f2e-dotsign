@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useAlertStore } from "../../store/useAlertStore";
 import closeIcon from "../../assets/icon/ic_close_s_white.svg";
@@ -25,8 +25,8 @@ const CustomAlert = () => {
   return (
     <>
       {alertData.showAlert && (
-        <div className="pl-6 pr-2 border-2 border-[#B7EC5D] absolute top-[50px] left-[50%] translte-x-2/4 translate-y-5 rounded-full bg-[#648D1EE5]">
-          <span className="text-white flex justify-center items-center">
+        <div className="pl-6 pr-2 border-2 border-[#B7EC5D] fixed top-[50px] left-2/4 -translate-x-2/4 md:absolute md:translate-y-5 rounded-full bg-[#648D1EE5] z-30">
+          <span className="w-max text-white flex justify-center items-center">
             {alertData.msg}
             <img
               src={closeIcon}
