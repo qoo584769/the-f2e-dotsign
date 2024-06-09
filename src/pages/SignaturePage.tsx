@@ -1,25 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { fabric } from "fabric";
 import * as pdfjsLib from "pdfjs-dist";
 import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-import {
-  useFileStore,
-  useFinalPDF,
-  useToolbarStore,
-} from "../store/useFileStore";
+import { useFileStore, useFinalPDF } from "../store/useFileStore";
 import { useFolderStore } from "../store/useFolderTabStore";
 
 import Container from "../utils/Container";
 import Navbar from "../components/Navbar/Navbar";
 import FolderLayout from "../components/Folder/FolderLayout";
 import FolderList from "../components/Folder/FolderList";
-import NewSignModal from "../components/Modal/NewSignModal";
 
-import SignatureCollection2 from "../components/ToolbarInSignature/ToolbarSign";
-import ImgCollection2 from "../components/ToolbarInSignature/ToolbarImage";
-import TextCollection2 from "../components/ToolbarInSignature/ToolbarText";
+import SignatureCollection from "../components/ToolbarInSignature/ToolbarSign";
+import ImgCollection from "../components/ToolbarInSignature/ToolbarImage";
+import TextCollection from "../components/ToolbarInSignature/ToolbarText";
 
 import signIcon from "../assets/icon/ic_sign.svg";
 import picIcon from "../assets/icon/ic_pic.svg";
@@ -29,30 +24,17 @@ import signIcon_h from "../assets/icon/ic_sign_h.svg";
 import picIcon_h from "../assets/icon/ic_pic_h.svg";
 import textIcon_h from "../assets/icon/ic_text_h.svg";
 import pageIcon_h from "../assets/icon/ic_page_h.svg";
-import addIcon from "../assets/icon/ic_add_dark.svg";
 import closeIcon from "../assets/icon/ic_close_s.svg";
-
-interface SignaturePageProps {
-  children?: React.ReactNode;
-  list?: any;
-  addItem(item: any, fabricCanvas: fabric.Canvas): void;
-  removeItem(item: any): void;
-}
 
 const SignaturePage = () => {
   const { uploadInfo } = useFileStore();
   const { setCompletedPDF } = useFinalPDF();
   const { pdfList, setPdfList } = useFolderStore();
-  const { signList, setSignList } = useToolbarStore();
 
   const fabricCanvasRef = useRef(null);
-  const imgRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [curPage, setCurPage] = useState(1);
-  // const [signList, setSignList] = useState([]);
-  const [imgList, setImgList] = useState<any[]>([]);
-  const [textList, setTextList] = useState<any[]>([]);
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
   const [checkedIcon, setCheckedIcon] = useState("簽名");
   const urlRef = useRef<string[]>([]);
@@ -74,7 +56,6 @@ const SignaturePage = () => {
   useEffect(() => {
     if (!uploadInfo.file) return;
     if (!fabricCanvas) return;
-    console.log(uploadInfo);
 
     const makeFabricCanvas = async () => {
       fabricCanvas.requestRenderAll();
@@ -156,73 +137,6 @@ const SignaturePage = () => {
     });
   };
 
-  // PDF放上簽名
-  const addSignature = (sign: any, fabricCanvas: fabric.Canvas) => {
-    fabric.Image.fromURL(sign, (img) => {
-      img.top = 300;
-      img.scaleX = 0.5;
-      img.scaleY = 0.5;
-      // img.scaleToWidth(100);
-      // img.scaleToHeight(100);
-      fabricCanvas.add(img);
-    });
-    fabricCanvas.renderAll();
-  };
-
-  // PDF放上圖片
-  const addImage = (image: any, fabricCanvas: fabric.Canvas) => {
-    fabric.Image.fromURL(image, (img) => {
-      const oImg = img.set({
-        left: 50,
-        top: 300,
-        scaleX: 0.2,
-        scaleY: 0.2,
-      });
-      // img.top = 300;
-      // img.left = 50;
-      // img.scaleX = 0.2;
-      // img.scaleY = 0.2;
-      // img.scaleToWidth(100);
-      // img.scaleToHeight(100);
-      fabricCanvas.add(oImg);
-    });
-    fabricCanvas.renderAll();
-  };
-
-  // PDF放上文字
-  const addText = (text: any, fabricCanvas: fabric.Canvas) => {
-    const editText = new fabric.IText(text, {
-      left: 50,
-      top: 100,
-    });
-
-    fabricCanvas.add(editText);
-    fabricCanvas.setActiveObject(editText);
-  };
-
-  // 刪除簽名列表的簽名
-  const removeSignature = (id: any) => {
-    const filterData = signList.filter((_item, index) => index !== id);
-    setSignList(filterData);
-    // setSignList((pre) => {
-    //   return pre.filter((_item, index) => index !== id);
-    // });
-  };
-
-  // 刪除圖片列表的圖片
-  const removeImage = (id: any) => {
-    setImgList((pre) => {
-      return pre.filter((_item, index) => index !== id);
-    });
-  };
-
-  // 刪除文字列表的文字
-  const removeText = (id: any) => {
-    setTextList((pre) => {
-      return pre.filter((_item, index) => index !== id);
-    });
-  };
-
   // PDF上簽名右上角刪除圖標
   const renderIcon = (
     ctx: CanvasRenderingContext2D,
@@ -286,238 +200,74 @@ const SignaturePage = () => {
     );
   };
 
-  // 左側選單container
-  const CollectionContainer: React.FC<SignaturePageProps> = ({
-    children,
-    list,
-    addItem,
-    removeItem,
-  }) => {
-    return (
-      <div
-        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
-        style={{
-          justifyContent: !list.length ? "center" : "",
-        }}
-      >
-        {list ? (
-          <div className="overflow-y-scroll">
-            {list.map((item: any, index: any) => {
-              return (
-                <div key={index} className="relative">
-                  <img
-                    src={closeIcon}
-                    alt=""
-                    className="absolute right-0 top-0 cursor-pointer"
-                    onClick={() => {
-                      removeItem(index);
-                    }}
-                  />
-                  <img
-                    key={index}
-                    src={item}
-                    alt=""
-                    className="block mb-2 bg-white"
-                    onClick={() => addItem(item, fabricCanvas as fabric.Canvas)}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
-        {children}
-      </div>
-    );
-  };
-
   // temp
-  // 左側簽名列表
-  const SignatureCollection = () => {
-    return (
-      <CollectionContainer
-        list={signList}
-        addItem={addSignature}
-        removeItem={removeSignature}
-      >
-        <div className="flex flex-col items-center mt-5">
-          <button className="flex flex-col " onClick={showModal}>
-            {signList.length === 0 ? (
-              <>
-                <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="mt-4">新增簽名檔</span>
-              </>
-            ) : (
-              <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
-            )}
-          </button>
-        </div>
-      </CollectionContainer>
-    );
-  };
-
-  // 左側圖片列表
-  const ImgCollection = () => {
-    return (
-      <CollectionContainer
-        list={imgList}
-        addItem={addImage}
-        removeItem={removeImage}
-      >
-        <div className="flex flex-col items-center mt-5">
-          <input
-            type="file"
-            name=""
-            id="uploadImg"
-            accept="image/*"
-            className="hidden"
-            ref={imgRef}
-            onChange={handleUpload}
-          />
-          <label htmlFor="uploadImg" className="flex flex-col items-center">
-            {imgList.length === 0 ? (
-              <>
-                <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="mt-4">新增圖片</span>
-              </>
-            ) : (
-              <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
-            )}
-          </label>
-        </div>
-      </CollectionContainer>
-    );
-  };
-
-  // 左側文字列表
-  const TextCollection = () => {
-    const [inputValue, setInputValue] = useState("");
-    const handleTextChange = (e: any) => {
-      setInputValue(e.target.value);
-    };
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        saveText();
-      }
-    };
-    const saveText = () => {
-      if (!inputValue.length) return;
-      setTextList((pre: any) => {
-        return [...pre, inputValue];
-      });
-    };
-
-    return (
-      <div
-        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
-        style={{
-          justifyContent: !textList.length ? "center" : "",
-        }}
-      >
-        {textList ? (
-          <div className="overflow-y-scroll">
-            {textList.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className="relative border flex items-center bg-white mb-3"
-                >
-                  <img
-                    src={closeIcon}
-                    alt=""
-                    className="absolute right-0 top-0 bottom-0 cursor-pointer"
-                    onClick={() => {
-                      removeText(index);
-                    }}
-                  />
-                  <button
-                    className="w-full text-left py-2 pl-3"
-                    onClick={() => {
-                      addText(item, fabricCanvas as fabric.Canvas);
-                    }}
-                  >
-                    {/* <img src={item} alt="" className="" /> */}
-                    {item}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
-
-        <div className="flex flex-col items-center mt-5">
-          <input
-            type="text"
-            id="addNewText"
-            className="w-full px-4 py-1 outline-none mb-3"
-            onChange={(e) => handleTextChange(e)}
-            onKeyDown={(e) => {
-              handleKeyDown(e);
-            }}
-            placeholder="請輸入文字"
-          />
-
-          <label
-            htmlFor="addNewText"
-            className="flex flex-col items-center cursor-pointer"
-            onClick={saveText}
-          >
-            {!textList.length ? (
-              <>
-                <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-                <span className="mt-4">新增文字</span>
-              </>
-            ) : (
-              <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
-            )}
-          </label>
-        </div>
-      </div>
-    );
-  };
-
   // 左側多頁PDF列表
   const PDFPageCollection = () => {
     return (
-      <div
-        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
-        style={{
-          justifyContent: !textList.length ? "center" : "",
-        }}
-      >
-        <div className="overflow-y-scroll">
-          {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
-            return (
-              <div className="overflow-y-scrll" key={index}>
-                <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
-                  <span className="">第 {index + 1} 頁</span>
-                  <img
-                    src={urlRef.current[index]}
-                    alt=""
-                    className="block"
-                    onClick={() => {
-                      setCurPage(index + 1);
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+      <>
+        {/* 手機板 */}
+        <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
+          <div className="border-b-2 border-b-[#B7EC5D] text-center">
+            簽名檔
+          </div>
+          <div className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden">
+            <div className="overflow-y-scroll">
+              {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
+                return (
+                  <div className="overflow-y-scrll" key={index}>
+                    <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
+                      <span className="">第 {index + 1} 頁</span>
+                      <img
+                        src={urlRef.current[index]}
+                        alt=""
+                        className="block"
+                        onClick={() => {
+                          setCurPage(index + 1);
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex justify-between">
+            <button
+              className="border-2 rounded-full py-2 w-full mr-5"
+              onClick={closeModal}
+            >
+              取消
+            </button>
+            <button className="border-2 rounded-full py-2 w-full">使用</button>
+          </div>
         </div>
-      </div>
+        {/* PC版 */}
+        <div className="hidden bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow md:flex flex-col overflow-y-hidden">
+          <div className="overflow-y-scroll">
+            {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
+              return (
+                <div className="overflow-y-scrll" key={index}>
+                  <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
+                    <span className="">第 {index + 1} 頁</span>
+                    <img
+                      src={urlRef.current[index]}
+                      alt=""
+                      className="block"
+                      onClick={() => {
+                        setCurPage(index + 1);
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </>
     );
   };
   // temp
-
-  // 左側圖片上傳
-  const handleUpload = () => {
-    if (imgRef.current !== null) {
-      const { files } = imgRef.current;
-      const imgURL = URL.createObjectURL(files[0]);
-      setImgList((pre: any) => {
-        return [...pre, imgURL];
-      });
-    }
-  };
 
   const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
     return obj[key];
@@ -527,13 +277,24 @@ const SignaturePage = () => {
     const collection = {
       // 簽名: <SignatureCollection></SignatureCollection>,
       簽名: (
-        <SignatureCollection2
+        <SignatureCollection
           fabricCanvas={fabricCanvas}
-        ></SignatureCollection2>
+          closeSignModal={closeModal}
+        ></SignatureCollection>
       ),
       // 圖片: <ImgCollection></ImgCollection>,
-      圖片: <ImgCollection2 fabricCanvas={fabricCanvas}></ImgCollection2>,
-      文字: <TextCollection2 fabricCanvas={fabricCanvas}></TextCollection2>,
+      圖片: (
+        <ImgCollection
+          fabricCanvas={fabricCanvas}
+          closeImgModal={closeModal}
+        ></ImgCollection>
+      ),
+      文字: (
+        <TextCollection
+          fabricCanvas={fabricCanvas}
+          closeTextModal={closeModal}
+        ></TextCollection>
+      ),
       // 文字: <TextCollection></TextCollection>,
       頁數: <PDFPageCollection></PDFPageCollection>,
     };
@@ -550,14 +311,6 @@ const SignaturePage = () => {
 
   return (
     <Container>
-      {isOpen ? (
-        <NewSignModal
-          closeModal={closeModal}
-          signList={signList}
-          setSignList={setSignList}
-        ></NewSignModal>
-      ) : null}
-
       <Navbar step="sign"></Navbar>
 
       <FolderLayout>
@@ -569,8 +322,9 @@ const SignaturePage = () => {
           finalPDF={finalPDF}
         ></FolderList>
 
-        <div className="flex-grow grid grid-cols-12 gap-x-5 overflow-hidden">
-          <div className="hidden border-r-2 border-[rgb(183,236,93)] col-span-3 pr-5 md:flex flex-col overflow-hidden">
+        <div className="md:flex-grow grid grid-rows-1 grid-cols-12 md:gap-x-5 overflow-hidden">
+          {/* PC版 */}
+          <div className="hidden border-r-2 border-[rgb(183,236,93)] md:col-span-3 pr-5 md:flex flex-col overflow-hidden">
             {/* 選擇工具 */}
             <div className="flex justify-between text-center mt-5 mb-4 mx-6">
               {iconArr.map((item, index) => (
@@ -599,8 +353,8 @@ const SignaturePage = () => {
             {/* 簽名列表 */}
             {collectionSelector(checkedIcon)}
           </div>
-
-          <div className="flex col-span-12 justify-evenly md:hidden">
+          {/* 手機板 */}
+          <div className="flex col-span-12 py-4 justify-evenly relative md:hidden">
             {iconArr.map((item, index) => (
               <div key={index} className="">
                 <input
@@ -609,7 +363,7 @@ const SignaturePage = () => {
                   id={item.icon}
                   value={item.text}
                   className="hidden"
-                  onChange={(e) => setCheckedIcon(e.target.value)}
+                  onChange={(e) => [setCheckedIcon(e.target.value)]}
                 />
                 <label htmlFor={item.icon} className="cursor-pointer">
                   <img
@@ -618,14 +372,23 @@ const SignaturePage = () => {
                     }
                     alt=""
                     className=""
+                    onClick={() => {
+                      showModal();
+                    }}
                   />
                 </label>
               </div>
             ))}
+            {/* 簽名列表 */}
+            <div
+              className={`fixed left-0 right-0 top-0 bottom-0 m-auto h-screen bg-[#22222280] ${isOpen ? "z-10" : "z-[-10]"}`}
+            >
+              {collectionSelector(checkedIcon)}
+            </div>
           </div>
 
-          <div className="col-span-12 max-w-[90%] md:col-span-9 md:max-w-[70%] mt-6 mb-1 m-auto overflow-scroll">
-            <div className="bg-[#b3b3b3] w-fit px-12 py-10 mx-auto">
+          <div className="col-span-12 max-h-[420px] md:max-h-[660px] max-w-[90%] md:col-span-9 md:max-w-[70%] mt-6 mb-1 m-auto overflow-scroll absolute bottom-16 left-0 top-[100px] right-0 md:relative md:top-0 md:bottom-0">
+            <div className="bg-[#b3b3b3] w-fit p-3 md:px-12 md:py-10 mx-auto h-fit">
               <canvas ref={fabricCanvasRef} id="canvas" className=""></canvas>
             </div>
           </div>

@@ -10,7 +10,8 @@ const Processbar: React.FC<ProcessProps> = ({ step }) => {
     "border-[#B7EC5D] shadow-[0px_0px_0px_4px_rgba(183,236,93,0.5)]";
   const finishDot = "bg-[#B7EC5D] border-[#B7EC5D]";
 
-  const baseLine = "w-[12.5rem] h-[2px] border-[1px] border-[#999999]";
+  const baseLine =
+    "w-[90px] md:w-[200px] h-[2px] border-[1px] border-[#999999]";
   const activeLine = "border-[#B7EC5D]";
 
   const baseText = "text-[#999999] text-sm font-medium";
@@ -36,7 +37,7 @@ const Processbar: React.FC<ProcessProps> = ({ step }) => {
         ></div>
       </div>
 
-      <div className="w-full flex justify-between">
+      <div className="w-full flex justify-evenly md:justify-between">
         <span className={`${baseText} ${step === "upload" && activeText}`}>
           上傳檔案
         </span>

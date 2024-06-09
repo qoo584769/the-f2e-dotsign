@@ -13,9 +13,13 @@ interface SignaturePageProps {
   children?: React.ReactNode;
   list?: any;
   fabricCanvas: fabric.Canvas | null;
+  closeImgModal(): void;
 }
 
-const ImgCollection: React.FC<SignaturePageProps> = ({ fabricCanvas }) => {
+const ImgCollection: React.FC<SignaturePageProps> = ({
+  fabricCanvas,
+  closeImgModal,
+}) => {
   const { imgList, setImgList } = useToolbarStore();
   const { setAlertData } = useAlertStore();
   // const [imgList, setImgList] = useState<any[]>([]);
@@ -68,8 +72,73 @@ const ImgCollection: React.FC<SignaturePageProps> = ({ fabricCanvas }) => {
           setImgList={setImgList}
         ></NewImgModal>
       )}
+      {/* 手機板 */}
+      <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
+        <div className="border-b-2 border-b-[#B7EC5D] text-center">圖片庫</div>
+        <div
+          className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden"
+          style={{
+            justifyContent: !imgList.length ? "center" : "",
+          }}
+        >
+          {imgList ? (
+            <div className="overflow-y-scroll">
+              {imgList.map((item: any, index: any) => {
+                return (
+                  <div key={index} className="relative">
+                    <img
+                      src={closeIcon}
+                      alt=""
+                      className="absolute right-0 top-0 cursor-pointer"
+                      onClick={() => {
+                        removeImage(index);
+                      }}
+                    />
+                    <img
+                      key={index}
+                      src={item}
+                      alt=""
+                      className="block mb-2 bg-white"
+                      onClick={() =>
+                        addImage(item, fabricCanvas as fabric.Canvas)
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+
+          <div className="flex flex-col items-center mt-5">
+            <button
+              className="flex flex-col items-center cursor-pointer"
+              onClick={toggleModal}
+            >
+              {imgList.length === 0 ? (
+                <>
+                  <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
+                  <span className="mt-4 text-2xl">新增圖片</span>
+                </>
+              ) : (
+                <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
+              )}
+            </button>
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <button
+            className="border-2 rounded-full py-2 w-full mr-5"
+            onClick={closeImgModal}
+          >
+            取消
+          </button>
+          <button className="border-2 rounded-full py-2 w-full">使用</button>
+        </div>
+      </div>
+
+      {/* PC版 */}
       <div
-        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
+        className="hidden bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow md:flex flex-col overflow-y-hidden"
         style={{
           justifyContent: !imgList.length ? "center" : "",
         }}

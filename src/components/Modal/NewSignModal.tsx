@@ -136,8 +136,9 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
   }, []);
 
   return (
-    <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-screen bg-[#34343480] flex justify-center items-center z-20">
-      <div className="bg-white px-8 py-6 w-fit rounded-3xl flex flex-col justify-center items-center">
+    <div className="fixed w-full h-full top-0 left-0 transition-all bg-black/50 flex items-center justify-center z-20">
+      {/* <div className="bg-white px-8 py-6 w-fit rounded-3xl flex flex-col justify-center items-center"> */}
+      <div className="w-[90%] max-w-[530px] min-h-[261px] px-8 pt-4 pb-7 rounded-[40px] flex flex-col justify-between bg-white">
         <div className="w-full text-center pb-4 border-b border-b-[#B7EC5D]">
           建立簽名檔
         </div>
@@ -145,30 +146,31 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
           <div className="mb-3">
             <PenColors></PenColors>
           </div>
-          <canvas
-            ref={signCanvasRef}
-            width={660}
-            height={270}
-            onTouchStart={startPosition}
-            onTouchEnd={finishPosition}
-            onTouchCancel={finishPosition}
-            onTouchMove={drow}
-            onMouseDown={startPosition}
-            onMouseUp={finishPosition}
-            onMouseLeave={finishPosition}
-            onMouseMove={drow}
-            className="border rounded-2xl border-[#B3B3B3] bg-[#F5F5F5]"
-          ></canvas>
+          <div className="w-full md:max-w-[300px]">
+            <canvas
+              ref={signCanvasRef}
+              height={300}
+              onTouchStart={startPosition}
+              onTouchEnd={finishPosition}
+              onTouchCancel={finishPosition}
+              onTouchMove={drow}
+              onMouseDown={startPosition}
+              onMouseUp={finishPosition}
+              onMouseLeave={finishPosition}
+              onMouseMove={drow}
+              className="w-full h-full border rounded-2xl border-[#B3B3B3] bg-[#F5F5F5]"
+            ></canvas>
+          </div>
         </div>
         <div className="grid gap-5 grid-cols-2 mt-10 mb-4">
           <button
-            className="border border-[#808080] px-[84px] py-2 rounded-full"
+            className="border border-[#808080] py-2 rounded-full"
             onClick={closeModal}
           >
             取消
           </button>
           <button
-            className="border border-[#b3b3b3] bg-[#ccc] px-[84px] py-2 rounded-full"
+            className="border border-[#b3b3b3] bg-[#ccc] py-2 rounded-full"
             onClick={saveImg}
           >
             確定

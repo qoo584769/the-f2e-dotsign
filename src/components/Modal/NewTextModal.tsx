@@ -29,7 +29,7 @@ const NewTextModal: React.FC<NewTextModalProps> = ({
   };
 
   return (
-    <div className="fixed w-full h-full top-0 left-0 transition-all bg-black/50 flex items-center justify-center z-[20]">
+    <div className="fixed w-full h-full top-0 left-0 transition-all bg-black/50 flex items-center justify-center z-20">
       <div className="w-[90%] max-w-[530px] min-h-[261px] px-8 pt-4 pb-7 rounded-[40px] flex flex-col justify-between bg-white">
         <textarea
           name=""

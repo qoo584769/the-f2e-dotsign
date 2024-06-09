@@ -9,7 +9,7 @@ interface ContainerProps {
 const Container: React.FC<ContainerProps> = ({ children }) => {
   return (
     <div
-      className="bg-no-repeat bg-bottom bg-[#333333] w-full h-screen"
+      className="bg-no-repeat bg-bottom bg-[#333333] w-full h-screen flex flex-col overflow-y-scroll"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
       {children}

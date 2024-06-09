@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { fabric } from "fabric";
 
 import { useToolbarStore } from "../../store/useFileStore";
@@ -11,9 +11,8 @@ import closeIcon from "../../assets/icon/ic_close_s.svg";
 interface SignaturePageProps {
   children?: React.ReactNode;
   list?: any;
-  // addItem(item: any, fabricCanvas: fabric.Canvas): void;
-  // removeItem(item: any): void;
   fabricCanvas: fabric.Canvas | null;
+  closeSignModal(): void;
 }
 
 // 左側選單container
@@ -64,6 +63,7 @@ interface SignaturePageProps {
 // 左側簽名列表
 const SignatureCollection: React.FC<SignaturePageProps> = ({
   fabricCanvas,
+  closeSignModal,
 }) => {
   const { signList, setSignList } = useToolbarStore();
   const { setAlertData } = useAlertStore();
@@ -104,7 +104,6 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
   const closeModal = () => {
     setIsOpen(false);
   };
-
   return (
     <>
       {isOpen ? (
@@ -114,8 +113,73 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
           setSignList={setSignList}
         ></NewSignModal>
       ) : null}
+
+      {/* 手機板 */}
+      <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
+        <div className="border-b-2 border-b-[#B7EC5D] text-center">簽名檔</div>
+        <div
+          className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden"
+          style={{
+            justifyContent: !signList.length ? "center" : "",
+          }}
+        >
+          {signList ? (
+            <div className="overflow-y-scroll">
+              {signList.map((item: any, index: any) => {
+                return (
+                  <div key={index} className="relative">
+                    <img
+                      src={closeIcon}
+                      alt=""
+                      className="absolute right-0 top-0 cursor-pointer"
+                      onClick={() => {
+                        removeSignature(index);
+                      }}
+                    />
+                    <img
+                      key={index}
+                      src={item}
+                      alt=""
+                      className="block mb-2 bg-white"
+                      onClick={() =>
+                        addSignature(item, fabricCanvas as fabric.Canvas)
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+
+          <div className="flex flex-col items-center mt-5">
+            <button
+              className="flex flex-col items-center cursor-pointer"
+              onClick={showModal}
+            >
+              {signList.length === 0 ? (
+                <>
+                  <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
+                  <span className="mt-4 text-2xl">新增簽名檔</span>
+                </>
+              ) : (
+                <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
+              )}
+            </button>
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <button
+            className="border-2 rounded-full py-2 w-full mr-5"
+            onClick={closeSignModal}
+          >
+            取消
+          </button>
+          <button className="border-2 rounded-full py-2 w-full">使用</button>
+        </div>
+      </div>
+      {/* PC版 */}
       <div
-        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow flex flex-col overflow-y-hidden"
+        className="bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow hidden md:flex flex-col overflow-y-hidden"
         style={{
           justifyContent: !signList.length ? "center" : "",
         }}
@@ -166,28 +230,6 @@ const SignatureCollection: React.FC<SignaturePageProps> = ({
       </div>
     </>
   );
-
-  // return (
-  //   <CollectionContainer
-  //     list={signList}
-  //     addItem={addSignature}
-  //     removeItem={removeSignature}
-  //     fabricCanvas={fabricCanvas}
-  //   >
-  //     <div className="flex flex-col items-center mt-5">
-  //       <button className="flex flex-col " onClick={showModal}>
-  //         {signList.length === 0 ? (
-  //           <>
-  //             <img src={addIcon} className="w-[80px] h-[80px]" alt="" />
-  //             <span className="mt-4">新增簽名檔</span>
-  //           </>
-  //         ) : (
-  //           <img src={addIcon} className="w-[60px] h-[60px]" alt="" />
-  //         )}
-  //       </button>
-  //     </div>
-  //   </CollectionContainer>
-  // );
 };
 
 export default SignatureCollection;

@@ -146,9 +146,9 @@ const UploadPage = () => {
           next={uploaded}
           nextPath="signature"
         ></FolderList>
-        <div className="w-full h-full p-7 flex-grow flex justify-center items-center">
+        <div className="w-full p-5 pb-16 md:p-7 flex-grow flex justify-center items-center">
           {uploaded ? (
-            <div className="w-fit h-fit flex flex-col justify-center items-center ">
+            <div className=" w-full h-fit flex flex-col justify-center items-center ">
               <div className="relative">
                 {isHover ? (
                   <img
@@ -171,16 +171,16 @@ const UploadPage = () => {
 
               <span className="mt-6">{uploadInfo?.file?.name}</span>
               {/* <span className="mt-6">{uploadInfo?.file.name}</span> */}
-              <span className="mt-1">{uploadInfo?.totalPages} 頁</span>
+              <span className="mt-1">{uploadInfo?.totalPages}頁</span>
               <label htmlFor="fileName" className="mt-10">
                 專案名稱
               </label>
-              <p className="mt-2 pl-6 flex border rounded-full">
+              <p className="w-full md:w-fit mt-2 pl-6 flex border border-[#4d4d4d] rounded-full">
                 <input
                   type="text"
                   id="fileName"
-                  className="w-[400px] outline-none border-none bg-transparent"
-                  placeholder={uploadInfo.file?.name || ""}
+                  className="w-full md:w-[400px] outline-none border-none bg-transparent"
+                  defaultValue={uploadInfo.file?.name || ""}
                 />
                 <img src={editIcon} alt="" className="" />
               </p>

@@ -9,7 +9,6 @@ import Container from "../utils/Container";
 import Navbar from "../components/Navbar/Navbar";
 import FolderLayout from "../components/Folder/FolderLayout";
 import FolderList from "../components/Folder/FolderList";
-import FolderTab from "../components/Folder/FolderTab";
 
 import addIcon from "../assets/icon/ic_add_dark.svg";
 import addTintIcon from "../assets/icon/ic_add_tint.svg";
@@ -44,7 +43,7 @@ const HomePage = () => {
   } = useFolderStore();
 
   const [curTab, setCurTab] = useState("file");
-  const [curShowStatus, setCurShowStatus] = useState("list");
+  const [curShowStatus, setCurShowStatus] = useState("card");
 
   const localTime = (item: any) => {
     const [date, time] = new Date(item.updateDate)
@@ -168,12 +167,12 @@ const HomePage = () => {
     return (
       <>
         <div className="px-4 pb-0 pt-4 flex flex-col relative">
-          <div className="w-max absolute left-[100%] bottom-[100%] -translae-x-1/2 translate-y-1/2">
+          <div className="w-max absolute bottom-[250%] right-0 md:left-[100%] md:bottom-[100%] md:-translae-x-1/2 md:translate-y-1/2">
             <Link to="upload">
               <img
                 src={addIcon}
                 alt=""
-                className="w-[80px] h-[80px]"
+                className="w-14 h-14 md:w-20 md:h-20"
                 onMouseEnter={(e) => imgMouseEnter(e, addTintIcon)}
                 onMouseLeave={(e) => imgMouseLeave(e, addIcon)}
               />
@@ -194,20 +193,21 @@ const HomePage = () => {
               <img
                 src={curShowStatus === "list" ? listHIcon : listIcon}
                 alt=""
-                className=""
+                className="hidden md:block"
                 onClick={() => setCurShowStatus("list")}
               />
               <img
                 src={curShowStatus === "card" ? cardHIcon : cardIcon}
                 alt=""
-                className=""
+                className="hidden md:block"
                 onClick={() => setCurShowStatus("card")}
               />
             </div>
           </li>
         </ul>
+        {/* PC版 */}
         {curShowStatus === "card" ? (
-          <div className="grid grid-flow-row grid-cols-1 gap-x-4 gap-y-5 px-4 py-2 md:grid-cols-4 overflow-y-auto">
+          <div className="hidden md:grid grid-flow-row grid-cols-1 gap-x-4 gap-y-5 px-4 py-2 md:grid-cols-4 overflow-y-auto">
             {list.map((listItem: any, index: any) => {
               return (
                 <div
@@ -278,6 +278,44 @@ const HomePage = () => {
             </ul>
           </div>
         )}
+        {/* 手機板 */}
+        <div className="relative flex-grow">
+          <div className="md:hidden grid grid-flow-row grid-cols-1 gap-x-4 gap-y-5 px-4 py-2 overflow-y-auto h-full absolute">
+            {list.map((listItem: any, index: any) => {
+              return (
+                <div
+                  key={index}
+                  className="p-4 flex flex-col items-center border rounded-2xl shadow-[0px_2px_8px_0px_rgba(215,215,215,0.4),0px_1px_5px_0px_rgba(179,179,179,0.4)] hover:border-1 hover:border-[#B7EC5D4D] hover:bg-gradient-to-t from-[#B7EC5D4D] via-[#B7EC5D1A] via-86.46% to-[#B7EC5D00)]"
+                >
+                  <div className="mb-4">
+                    <img
+                      src={listItem.pdf}
+                      className="block m-auto w-1/3"
+                      alt=""
+                    />
+                  </div>
+                  <div className="">{listItem.name}</div>
+                  <div className="">{localTime(listItem)}</div>
+                  <div className="flex justify-end mt-4">
+                    {iconObj.map((item: any, index: any) => {
+                      return (
+                        <img
+                          key={index}
+                          src={item[0]}
+                          alt=""
+                          className="cursor-pointer"
+                          onMouseEnter={(e) => imgMouseEnter(e, item[1])}
+                          onMouseLeave={(e) => imgMouseLeave(e, item[0])}
+                          onClick={() => item[2](listItem, listItem.updateDate)}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </>
     );
   };
@@ -338,15 +376,6 @@ const HomePage = () => {
             </li>
           </ul>
         </FolderList>
-
-        {/* <div className="w-full h-full flex flex-col justify-center items-center">
-          <Link to="upload">
-            <img src={addIcon} alt="" className="" />
-          </Link>
-          <span className="block mt-7 text-4xl text-[#1e1e1e]">
-            快來建立新檔吧
-          </span>
-        </div> */}
 
         {selectTab(curTab)}
       </FolderLayout>
