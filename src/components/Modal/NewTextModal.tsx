@@ -24,6 +24,8 @@ const NewTextModal: React.FC<NewTextModalProps> = ({
     const alertData = {
       msg: "文字新增成功",
       showAlert: true,
+      bgColor: "bg-[#648D1EE5]",
+      bdColor: "border-[#B7EC5D]",
     };
     setAlertData(alertData);
   };

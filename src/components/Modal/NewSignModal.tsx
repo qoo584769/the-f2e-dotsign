@@ -96,6 +96,8 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
     const alertData = {
       msg: "新增簽名檔成功",
       showAlert: true,
+      bgColor: "bg-[#648D1EE5]",
+      bdColor: "border-[#B7EC5D]",
     };
     setAlertData(alertData);
   };

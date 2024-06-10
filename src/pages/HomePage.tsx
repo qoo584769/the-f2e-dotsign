@@ -103,6 +103,10 @@ const HomePage = () => {
     setTrashList(filterTrashData);
   };
 
+  const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
+    return obj[key];
+  };
+
   const iconObj = {
     file: [
       [downloadIcon, downloadHIcon, downloadFile],
@@ -152,16 +156,39 @@ const HomePage = () => {
     };
 
     if (!list.length) {
-      return (
-        <div className="w-full h-full flex flex-col justify-center items-center">
-          <Link to="upload">
-            <img src={addIcon} alt="" className="" />
-          </Link>
-          <span className="block mt-7 text-4xl text-[#1e1e1e]">
-            快來建立新檔吧
-          </span>
-        </div>
-      );
+      const data = {
+        file: (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <Link to="upload">
+              <img src={addIcon} alt="" className="w-20 h-20" />
+            </Link>
+            <span className="block mt-7 text-2xl md:text-4xl text-[#1e1e1e]">
+              快來建立新檔吧
+            </span>
+          </div>
+        ),
+        archive: (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <img src={archiveHIcon} alt="" className="w-20 h-20" />
+
+            <span className="block mt-7 text-2xl md:text-4xl text-[#1e1e1e]">
+              沒有任何項目
+            </span>
+            <span className="">封存的項目會顯示在這裡</span>
+          </div>
+        ),
+        trash: (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <img src={trashHIcon} alt="" className="w-20 h-20" />
+
+            <span className="block mt-7 text-2xl md:text-4xl text-[#1e1e1e]">
+              沒有任何項目
+            </span>
+            <span className="">刪除的項目會顯示在這裡</span>
+          </div>
+        ),
+      };
+      return getProps(data, curTab as any);
     }
 
     return (
@@ -285,7 +312,7 @@ const HomePage = () => {
               return (
                 <div
                   key={index}
-                  className="p-4 flex flex-col items-center border rounded-2xl shadow-[0px_2px_8px_0px_rgba(215,215,215,0.4),0px_1px_5px_0px_rgba(179,179,179,0.4)] hover:border-1 hover:border-[#B7EC5D4D] hover:bg-gradient-to-t from-[#B7EC5D4D] via-[#B7EC5D1A] via-86.46% to-[#B7EC5D00)]"
+                  className="h-fit p-4 flex flex-col justify-start items-center border rounded-2xl shadow-[0px_2px_8px_0px_rgba(215,215,215,0.4),0px_1px_5px_0px_rgba(179,179,179,0.4)] hover:border-1 hover:border-[#B7EC5D4D] hover:bg-gradient-to-t from-[#B7EC5D4D] via-[#B7EC5D1A] via-86.46% to-[#B7EC5D00)]"
                 >
                   <div className="mb-4">
                     <img
@@ -318,10 +345,6 @@ const HomePage = () => {
         </div>
       </>
     );
-  };
-
-  const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
-    return obj[key];
   };
 
   const selectTab = (curTab: any) => {

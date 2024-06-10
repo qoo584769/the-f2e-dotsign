@@ -50,6 +50,8 @@ const UploadPage = () => {
       const alertData = {
         msg: "檔案上傳成功",
         showAlert: true,
+        bgColor: "bg-[#648D1EE5]",
+        bdColor: "border-[#B7EC5D]",
       };
       setAlertData(alertData);
     }
@@ -67,6 +69,8 @@ const UploadPage = () => {
           const alertData = {
             msg: "檔案格式錯誤",
             showAlert: true,
+            bgColor: "bg-[#F93819]/[.8]",
+            bdColor: "border-[#F93819]",
           };
           setAlertData(alertData);
           return;
@@ -75,6 +79,8 @@ const UploadPage = () => {
           const alertData = {
             msg: "檔案過大",
             showAlert: true,
+            bgColor: "bg-[#F93819]/[.8]",
+            bdColor: "border-[#F93819]",
           };
           setAlertData(alertData);
           return;
@@ -113,6 +119,8 @@ const UploadPage = () => {
       const alertData = {
         msg: "檔案過大",
         showAlert: true,
+        bgColor: "bg-[#F93819]/[.8]",
+        bdColor: "border-[#F93819]",
       };
       setAlertData(alertData);
       return;
@@ -146,7 +154,7 @@ const UploadPage = () => {
           next={uploaded}
           nextPath="signature"
         ></FolderList>
-        <div className="w-full p-5 pb-16 md:p-7 flex-grow flex justify-center items-center">
+        <div className="w-full pt-5 pb-16 md:p-7 flex-grow flex justify-center items-center">
           {uploaded ? (
             <div className=" w-full h-fit flex flex-col justify-center items-center ">
               <div className="relative">
@@ -170,7 +178,6 @@ const UploadPage = () => {
               </div>
 
               <span className="mt-6">{uploadInfo?.file?.name}</span>
-              {/* <span className="mt-6">{uploadInfo?.file.name}</span> */}
               <span className="mt-1">{uploadInfo?.totalPages}頁</span>
               <label htmlFor="fileName" className="mt-10">
                 專案名稱
@@ -207,7 +214,7 @@ const UploadPage = () => {
               >
                 選擇檔案
               </label>
-              <span className="block mt-8 text-base text-[#1e1e1e]">
+              <span className="block mt-8 text-base text-[#1e1e1e] text-center">
                 僅支援 PDF、JPG、PNG 檔案，且容量不超過 20MB。
               </span>
             </div>

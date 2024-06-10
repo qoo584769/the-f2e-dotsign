@@ -7,8 +7,6 @@ type TPDFList = {
   name: string | undefined;
   status?: string;
 };
-type TArchiveList = string[];
-type TTrashList = string[];
 
 interface IFolderTabState {
   pdfList: TPDFList[];

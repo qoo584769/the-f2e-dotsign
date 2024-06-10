@@ -37,7 +37,7 @@ const Processbar: React.FC<ProcessProps> = ({ step }) => {
         ></div>
       </div>
 
-      <div className="w-full flex justify-evenly md:justify-between">
+      <div className="hidden w-full md:flex md:justify-between">
         <span className={`${baseText} ${step === "upload" && activeText}`}>
           上傳檔案
         </span>

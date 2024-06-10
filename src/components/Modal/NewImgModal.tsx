@@ -30,6 +30,8 @@ const NewImgModal: React.FC<NewImgModalProps> = ({
       const alertData = {
         msg: "新增圖片成功",
         showAlert: true,
+        bgColor: "bg-[#648D1EE5]",
+        bdColor: "border-[#B7EC5D]",
       };
       setAlertData(alertData);
     }
@@ -55,6 +57,8 @@ const NewImgModal: React.FC<NewImgModalProps> = ({
     const alertData = {
       msg: "新增圖片成功",
       showAlert: true,
+      bgColor: "bg-[#648D1EE5]",
+      bdColor: "border-[#B7EC5D]",
     };
     setAlertData(alertData);
   };

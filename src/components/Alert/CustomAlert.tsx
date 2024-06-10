@@ -18,6 +18,8 @@ const CustomAlert = () => {
     const data = {
       msg: "",
       showAlert: false,
+      bgColor: "",
+      bdColor: "",
     };
     setAlertData(data);
   };
@@ -25,7 +27,9 @@ const CustomAlert = () => {
   return (
     <>
       {alertData.showAlert && (
-        <div className="pl-6 pr-2 border-2 border-[#B7EC5D] fixed top-[50px] left-2/4 -translate-x-2/4 md:absolute md:translate-y-5 rounded-full bg-[#648D1EE5] z-30">
+        <div
+          className={`pl-6 pr-2 border-2 order-[#B7EC5D] fixed top-[50px] left-2/4 -translate-x-2/4 md:absolute md:translate-y-5 rounded-full g-[#648D1EE5] z-30 ${alertData.bgColor} ${alertData.bdColor}`}
+        >
           <span className="w-max text-white flex justify-center items-center">
             {alertData.msg}
             <img

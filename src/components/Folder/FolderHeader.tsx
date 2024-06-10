@@ -29,7 +29,9 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
   if (title === "我的文件") {
     return (
       <>
-        <h2 className="text-3xl text-[#1e1e1e] px-4 pb-1 md:pb-4">{title}</h2>
+        <h2 className="text-xl md:text-3xl text-[#1e1e1e] px-4 pb-1 md:pb-4">
+          {title}
+        </h2>
         <div className="border-b-2 border-b-[#B7EC5D]"></div>
         {children}
       </>
@@ -76,8 +78,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
       return (
         <Button state="active">
           <div className="flex justify-center items-center" onClick={openModal}>
-            <span className="mr-[10px]">下一步</span>
-            <img src={rightArrActive} alt="" className="" />
+            <span className="md:mr-[10px]">下一步</span>
+            <img src={rightArrActive} alt="" className="w-10" />
           </div>
         </Button>
       );
@@ -85,8 +87,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
     return (
       <Link to={`/${nextPath.nextPath}`}>
         <Button state="active">
-          <span className="mr-[10px]">下一步</span>
-          <img src={rightArrActive} alt="" className="" />
+          <span className="md:mr-[10px]">下一步</span>
+          <img src={rightArrActive} alt="" className="w-10" />
         </Button>
       </Link>
     );
@@ -96,20 +98,20 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
     <>
       {isOpen && <CheckModal></CheckModal>}
       {/* 手機板 */}
-      <div className="md:hidden border-b-2 border-b-[#B7EC5D] pb-2 flex justify-center">
-        <h2 className="text-3xl text-[#1e1e1e]">{title}</h2>
-        <div className="px-4 pb-4 flex justify-around items-center absolute left-0 right-0 bottom-0 mx-auto ">
+      <div className="border-b-2 border-b-[#B7EC5D] pb-2 flex justify-center md:hidden">
+        <h2 className="text-base text-[#1e1e1e]">{title}</h2>
+        <div className="px-4 pb-4 flex justify-evenly items-center absolute left-0 right-0 bottom-0 mx-auto ">
           {next ? (
             <Link to={`/${prePath}`}>
               <Button state="none">
-                <img src={leftArr} alt="" className="" />
+                <img src={leftArr} alt="" className="w-10" />
                 <span className="ml-[10px]">上一步</span>
               </Button>
             </Link>
           ) : (
             <Link to={`/${prePath}`}>
               <Button state="none">
-                <img src={leftArr} alt="" className="" />
+                <img src={leftArr} alt="" className="w-10" />
                 <span className="ml-[10px]">回首頁</span>
               </Button>
             </Link>
@@ -124,8 +126,8 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
                 </button>
               ) : (
                 <Button state="disabled">
-                  <span className="mr-[10px]">下一步</span>
-                  <img src={rightArrDisabled} alt="" className="" />
+                  <span className="mr-0">下一步</span>
+                  <img src={rightArrDisabled} alt="" className="w-10" />
                 </Button>
               )}
             </>
@@ -149,7 +151,7 @@ const FolderHeader: React.FC<FolderHeaderProps> = ({
             </Button>
           </Link>
         )}
-        <h2 className="text-3xl text-[#1e1e1e]">{title}</h2>
+        <h2 className="md:text-3xl text-[#1e1e1e]">{title}</h2>
         {next ? (
           <FinishBtn nextPath={nextPath}></FinishBtn>
         ) : (

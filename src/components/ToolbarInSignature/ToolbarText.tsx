@@ -42,6 +42,8 @@ const TextCollection: React.FC<SignaturePageProps> = ({
     const alertData = {
       msg: "文字刪除成功",
       showAlert: true,
+      bgColor: "bg-[#648D1EE5]",
+      bdColor: "border-[#B7EC5D]",
     };
     setAlertData(alertData);
   };
@@ -117,12 +119,12 @@ const TextCollection: React.FC<SignaturePageProps> = ({
 
         <div className="flex justify-between">
           <button
-            className="border-2 rounded-full py-2 w-full mr-5"
+            className="border-2 rounded-full py-2 w-full"
             onClick={closeTextModal}
           >
             取消
           </button>
-          <button className="border-2 rounded-full py-2 w-full">使用</button>
+          {/* <button className="border-2 rounded-full py-2 ml-5 w-full">使用</button> */}
         </div>
       </div>
       {/* PC版 */}

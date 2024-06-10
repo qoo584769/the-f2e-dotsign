@@ -6,12 +6,16 @@ interface ButtonProps {
 }
 
 const NoneBtn: React.FC<ButtonProps> = ({ children }) => {
-  return <button className="text-xl flex text-[#4d4d4d]">{children}</button>;
+  return (
+    <button className="text-base md:text-xl flex text-[#4d4d4d]">
+      {children}
+    </button>
+  );
 };
 
 const DisabledBtn: React.FC<ButtonProps> = ({ children }) => {
   return (
-    <button className="flex text-xl border-2 border-[#b3b3b3] bg-[#cccccc] rounded-full px-7 py-1 cursor-not-allowed text-[#808080]">
+    <button className="flex text-base md:text-xl border-2 border-[#b3b3b3] bg-[#cccccc] rounded-full px-7 py-1 cursor-not-allowed text-[#808080]">
       {children}
     </button>
   );
@@ -19,7 +23,7 @@ const DisabledBtn: React.FC<ButtonProps> = ({ children }) => {
 
 const ActiveBtn: React.FC<ButtonProps> = ({ children }) => {
   return (
-    <button className="flex text-xl border-2 border-[#b7ec5d] rounded-full px-7 py-1 bg-[#4d4d4d] text-[#b7ec5d]">
+    <button className="flex text-base md:text-xl border-2 border-[#b7ec5d] rounded-full px-7 py-1 bg-[#4d4d4d] text-[#b7ec5d]">
       {children}
     </button>
   );

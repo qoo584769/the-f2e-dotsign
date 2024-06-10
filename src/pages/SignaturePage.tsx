@@ -15,6 +15,7 @@ import FolderList from "../components/Folder/FolderList";
 import SignatureCollection from "../components/ToolbarInSignature/ToolbarSign";
 import ImgCollection from "../components/ToolbarInSignature/ToolbarImage";
 import TextCollection from "../components/ToolbarInSignature/ToolbarText";
+import PDFPageCollection from "../components/ToolbarInSignature/ToolbarCanvas";
 
 import signIcon from "../assets/icon/ic_sign.svg";
 import picIcon from "../assets/icon/ic_pic.svg";
@@ -201,71 +202,71 @@ const SignaturePage = () => {
   };
 
   // 左側多頁PDF列表
-  const PDFPageCollection = () => {
-    return (
-      <>
-        {/* 手機板 */}
-        <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
-          <div className="border-b-2 border-b-[#B7EC5D] text-center">
-            簽名檔
-          </div>
-          <div className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden">
-            <div className="overflow-y-scroll">
-              {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
-                return (
-                  <div className="overflow-y-scrll" key={index}>
-                    <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
-                      <span className="">第 {index + 1} 頁</span>
-                      <img
-                        src={urlRef.current[index]}
-                        alt=""
-                        className="block"
-                        onClick={() => {
-                          setCurPage(index + 1);
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+  // const PDFPageCollection = () => {
+  //   return (
+  //     <>
+  //       {/* 手機板 */}
+  //       <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
+  //         <div className="border-b-2 border-b-[#B7EC5D] text-center">
+  //           簽名檔
+  //         </div>
+  //         <div className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden">
+  //           <div className="overflow-y-scroll">
+  //             {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
+  //               return (
+  //                 <div className="overflow-y-scrll" key={index}>
+  //                   <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
+  //                     <span className="">第 {index + 1} 頁</span>
+  //                     <img
+  //                       src={urlRef.current[index]}
+  //                       alt=""
+  //                       className="block"
+  //                       onClick={() => {
+  //                         setCurPage(index + 1);
+  //                       }}
+  //                     />
+  //                   </div>
+  //                 </div>
+  //               );
+  //             })}
+  //           </div>
+  //         </div>
 
-          <div className="flex justify-between">
-            <button
-              className="border-2 rounded-full py-2 w-full mr-5"
-              onClick={closeModal}
-            >
-              取消
-            </button>
-            <button className="border-2 rounded-full py-2 w-full">使用</button>
-          </div>
-        </div>
-        {/* PC版 */}
-        <div className="hidden bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow md:flex flex-col overflow-y-hidden">
-          <div className="overflow-y-scroll">
-            {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
-              return (
-                <div className="overflow-y-scrll" key={index}>
-                  <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
-                    <span className="">第 {index + 1} 頁</span>
-                    <img
-                      src={urlRef.current[index]}
-                      alt=""
-                      className="block"
-                      onClick={() => {
-                        setCurPage(index + 1);
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </>
-    );
-  };
+  //         <div className="flex justify-between">
+  //           <button
+  //             className="border-2 rounded-full py-2 w-full "
+  //             onClick={closeModal}
+  //           >
+  //             取消
+  //           </button>
+  //           {/* <button className="border-2 rounded-full py-2 ml-5 w-full">使用</button> */}
+  //         </div>
+  //       </div>
+  //       {/* PC版 */}
+  //       <div className="hidden bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow md:flex flex-col overflow-y-hidden">
+  //         <div className="overflow-y-scroll">
+  //           {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
+  //             return (
+  //               <div className="overflow-y-scrll" key={index}>
+  //                 <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
+  //                   <span className="">第 {index + 1} 頁</span>
+  //                   <img
+  //                     src={urlRef.current[index]}
+  //                     alt=""
+  //                     className="block"
+  //                     onClick={() => {
+  //                       setCurPage(index + 1);
+  //                     }}
+  //                   />
+  //                 </div>
+  //               </div>
+  //             );
+  //           })}
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // };
 
   const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
     return obj[key];
@@ -291,7 +292,15 @@ const SignaturePage = () => {
           closeTextModal={closeModal}
         ></TextCollection>
       ),
-      頁數: <PDFPageCollection></PDFPageCollection>,
+      頁數: (
+        <PDFPageCollection
+          closeCanvasModal={closeModal}
+          urlRef={urlRef}
+          curPage={curPage}
+          setCurPage={setCurPage}
+        ></PDFPageCollection>
+      ),
+      // 頁數: <PDFPageCollection ></PDFPageCollection>,
     };
     return getProps(collection, collectionName);
   };
