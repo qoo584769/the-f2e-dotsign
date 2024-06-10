@@ -38,7 +38,9 @@ const ToolbarCanvas: React.FC<CanvasPageProps> = ({
                   >
                     <span className="">{index + 1}.</span>
                     <img src={urlRef.current[index]} alt="" className="block" />
-                    <span className="w-2 h-2 bg-[#F93819] rounded-full justify-self-end"></span>
+                    <span
+                      className={`${index + 1 === curPage && "w-2 h-2 bg-[#F93819] rounded-full justify-self-end"}`}
+                    ></span>
                   </div>
                 </div>
               );
@@ -70,7 +72,9 @@ const ToolbarCanvas: React.FC<CanvasPageProps> = ({
                 >
                   <span className="">{index + 1}.</span>
                   <img src={urlRef.current[index]} alt="" className="block" />
-                  <span className="w-2 h-2 bg-[#F93819] rounded-full justify-self-end"></span>
+                  <span
+                    className={`${index + 1 === curPage && "w-2 h-2 bg-[#F93819] rounded-full justify-self-end"}`}
+                  ></span>
                 </div>
               </div>
             );
