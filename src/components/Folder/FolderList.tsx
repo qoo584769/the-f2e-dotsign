@@ -2,6 +2,7 @@ import React from "react";
 import FolderHeader from "./FolderHeader";
 
 interface FolderListProps {
+  children?: React.ReactNode;
   title?: string;
   next?: Boolean;
   prePath?: String;
@@ -11,6 +12,7 @@ interface FolderListProps {
 }
 
 const FolderList: React.FC<FolderListProps> = ({
+  children,
   title = "",
   next = false,
   prePath = "",
@@ -28,7 +30,9 @@ const FolderList: React.FC<FolderListProps> = ({
         nextPath={nextPath}
         finalPDF={finalPDF}
         download={download}
-      ></FolderHeader>
+      >
+        {children}
+      </FolderHeader>
     );
   }
 };

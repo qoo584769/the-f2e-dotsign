@@ -1,7 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { FileContextProvider } from "./store/FileContext";
-
+import CustomAlert from "./components/Alert/CustomAlert";
 import "./App.css";
 
 import HomePage from "./pages/HomePage";
@@ -14,6 +14,7 @@ function App() {
   return (
     <HashRouter>
       <FileContextProvider>
+        <CustomAlert></CustomAlert>
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}></Route>
           <Route path="/upload" element={<UploadPage></UploadPage>}></Route>
@@ -27,16 +28,6 @@ function App() {
       </FileContextProvider>
     </HashRouter>
   );
-}
-{
-  /* <div className="bg-[#333333] w-full h-screen">
-  <Layout>
-    <Navbar></Navbar>
-    <FolderLayout>
-      <FolderList></FolderList>
-    </FolderLayout>
-  </Layout>
-</div> */
 }
 
 export default App;
