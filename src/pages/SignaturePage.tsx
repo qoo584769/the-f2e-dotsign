@@ -45,7 +45,10 @@ const SignaturePage = () => {
   }, [checkedIcon]);
 
   useEffect(() => {
-    const fc = new fabric.Canvas(fabricCanvasRef.current);
+    const fc = new fabric.Canvas(fabricCanvasRef.current, {
+      allowTouchScrolling: true,
+    });
+
     setFabricCanvas(fc);
 
     return () => {
@@ -72,6 +75,53 @@ const SignaturePage = () => {
       );
     };
     makeFabricCanvas();
+
+    // 手機板畫面滑動
+    // let startP = 0;
+    // let endP = 0;
+    // fabricCanvas.on("mouse:down", function (opt) {
+    //   const e = opt.e;
+    //   if (
+    //     e.type === "touchstart" &&
+    //     (e as unknown as TouchEvent).touches &&
+    //     (e as unknown as TouchEvent).touches.length === 1
+    //   ) {
+    //     startP = (e as unknown as TouchEvent).touches[0].clientX;
+    //     endP = (e as unknown as TouchEvent).touches[0].clientY;
+    //   }
+    // });
+    // fabricCanvas.on("mouse:move", function (opt) {
+    //   const e = opt.e;
+    //   if (
+    //     e.type === "touchmove" &&
+    //     (e as unknown as TouchEvent).touches &&
+    //     (e as unknown as TouchEvent).touches.length
+    //   ) {
+    //   }
+    // });
+    // fabricCanvas.on("mouse:up", function (opt) {
+    //   const e = opt.e;
+    //   const vpt = fabricCanvas.viewportTransform;
+    //   if (
+    //     (e as unknown as TouchEvent).type === "touchend" &&
+    //     vpt !== undefined
+    //   ) {
+    //     if ((e as unknown as TouchEvent).changedTouches[0].clientX > startP) {
+    //       vpt[4] += (e as unknown as TouchEvent).changedTouches[0].clientX / 5;
+    //       fabricCanvas.requestRenderAll();
+    //     } else {
+    //       vpt[4] -= (e as unknown as TouchEvent).changedTouches[0].clientX / 5;
+    //       fabricCanvas.requestRenderAll();
+    //     }
+    //     if ((e as unknown as TouchEvent).changedTouches[0].clientY > endP) {
+    //       vpt[5] += (e as unknown as TouchEvent).changedTouches[0].clientX / 5;
+    //       fabricCanvas.requestRenderAll();
+    //     } else {
+    //       vpt[5] -= (e as unknown as TouchEvent).changedTouches[0].clientX / 5;
+    //       fabricCanvas.requestRenderAll();
+    //     }
+    //   }
+    // });
 
     fabric.Object.prototype.controls.deleteControl = new fabric.Control({
       x: 0.5,
@@ -120,6 +170,7 @@ const SignaturePage = () => {
 
     canvas.width = viewport.width * window.devicePixelRatio;
     canvas.height = viewport.height * window.devicePixelRatio;
+
     const renderTask = pdfPage.render({
       canvasContext: context as CanvasRenderingContext2D,
       viewport,
@@ -130,7 +181,7 @@ const SignaturePage = () => {
   // PDF轉圖片
   const pdfToImg = async (pdfData: any) => {
     // 設定 PDF 轉為圖片時的比例
-    const scale = 1 / window.devicePixelRatio;
+    const scale = 1;
     // 回傳圖片
     return new fabric.Image(pdfData, {
       scaleX: scale,
@@ -200,73 +251,6 @@ const SignaturePage = () => {
       }),
     );
   };
-
-  // 左側多頁PDF列表
-  // const PDFPageCollection = () => {
-  //   return (
-  //     <>
-  //       {/* 手機板 */}
-  //       <div className="w-full h-4/5 p-8 pt-6 rounded-t-[40px] bg-white absolute bottom-0 flex flex-col md:hidden">
-  //         <div className="border-b-2 border-b-[#B7EC5D] text-center">
-  //           簽名檔
-  //         </div>
-  //         <div className="bg-[#F5F5F5] my-6 rounded-2xl flex-grow flex flex-col overflow-y-hidden md:hidden">
-  //           <div className="overflow-y-scroll">
-  //             {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
-  //               return (
-  //                 <div className="overflow-y-scrll" key={index}>
-  //                   <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
-  //                     <span className="">第 {index + 1} 頁</span>
-  //                     <img
-  //                       src={urlRef.current[index]}
-  //                       alt=""
-  //                       className="block"
-  //                       onClick={() => {
-  //                         setCurPage(index + 1);
-  //                       }}
-  //                     />
-  //                   </div>
-  //                 </div>
-  //               );
-  //             })}
-  //           </div>
-  //         </div>
-
-  //         <div className="flex justify-between">
-  //           <button
-  //             className="border-2 rounded-full py-2 w-full "
-  //             onClick={closeModal}
-  //           >
-  //             取消
-  //           </button>
-  //           {/* <button className="border-2 rounded-full py-2 ml-5 w-full">使用</button> */}
-  //         </div>
-  //       </div>
-  //       {/* PC版 */}
-  //       <div className="hidden bg-[#F5F5F5] p-5 ml-2 rounded-2xl flex-grow md:flex flex-col overflow-y-hidden">
-  //         <div className="overflow-y-scroll">
-  //           {Array.from(new Array(uploadInfo.totalPages), (_, index) => {
-  //             return (
-  //               <div className="overflow-y-scrll" key={index}>
-  //                 <div className="grid place-content-center border rounded-xl bg-white overflow-y-scrol">
-  //                   <span className="">第 {index + 1} 頁</span>
-  //                   <img
-  //                     src={urlRef.current[index]}
-  //                     alt=""
-  //                     className="block"
-  //                     onClick={() => {
-  //                       setCurPage(index + 1);
-  //                     }}
-  //                   />
-  //                 </div>
-  //               </div>
-  //             );
-  //           })}
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // };
 
   const getProps = <T extends object, K extends keyof T>(obj: T, key: K) => {
     return obj[key];
@@ -392,7 +376,9 @@ const SignaturePage = () => {
           </div>
 
           <div className="col-span-12 max-h-[420px] md:max-h-[660px] max-w-[90%] md:col-span-9 md:max-w-[70%] mt-6 mb-1 m-auto overflow-scroll absolute bottom-16 left-0 top-[100px] right-0 md:relative md:top-0 md:bottom-0">
-            <div className="bg-[#b3b3b3] w-fit p-3 md:px-12 md:py-10 mx-auto h-fit">
+            <div
+              className={`bg-[#b3b3b3] md:w-fit p-3 md:px-12 md:py-10 mx-auto h-fit`}
+            >
               <canvas ref={fabricCanvasRef} id="canvas" className=""></canvas>
             </div>
           </div>
