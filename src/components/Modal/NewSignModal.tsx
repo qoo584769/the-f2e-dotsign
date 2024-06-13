@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { useAlertStore } from "../../store/useAlertStore";
+
 import penBlack from "../../assets/icon/ic_color_black.svg";
 import penBlack_h from "../../assets/icon/ic_color_black_h.svg";
 import penBlue from "../../assets/icon/ic_color_blue.svg";
@@ -12,17 +14,20 @@ import trashIcon_h from "../../assets/icon/ic_trash_h.svg";
 interface NewSignModalProps {
   children?: React.ReactNode;
   closeModal(): void;
+  signList: string[];
   setSignList: any;
 }
 
 const NewSignModal: React.FC<NewSignModalProps> = ({
   closeModal,
+  signList,
   setSignList,
 }) => {
+  const { setAlertData } = useAlertStore();
+
   const signCanvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
-  // const [src, setSrc] = useState("");
 
   const [isPainting, setIsPainting] = useState(false);
   const [penColor, setPenColor] = useState("black");
@@ -78,15 +83,23 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
     (canvas as HTMLCanvasElement).toBlob(
       (blob: any) => {
         const url = URL.createObjectURL(blob);
-        setSignList((pre: any[]) => {
-          return [...pre, url];
-        });
+        setSignList([...signList, url]);
+        // setSignList((pre: any[]) => {
+        //   return [...pre, url];
+        // });
       },
       "image/png",
       1,
     );
 
     closeModal();
+    const alertData = {
+      msg: "新增簽名檔成功",
+      showAlert: true,
+      bgColor: "bg-[#648D1EE5]",
+      bdColor: "border-[#B7EC5D]",
+    };
+    setAlertData(alertData);
   };
   const changePenColor = (color = "black") => {
     if (color === "trash") {
@@ -119,14 +132,22 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
 
   // 設定初始化簽名畫布
   useEffect(() => {
+    const w = window.innerWidth;
     const c = signCanvasRef.current;
+    if (w > 768) {
+      (c as HTMLCanvasElement).width = 460;
+      (c as HTMLCanvasElement).height = 250;
+    } else {
+      (c as HTMLCanvasElement).width = 300;
+      (c as HTMLCanvasElement).height = 180;
+    }
     setCanvas(c);
     if (c) setCtx(c.getContext("2d"));
-  }, []);
+  }, [window.innerWidth]);
 
   return (
-    <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-screen bg-[#34343480] flex justify-center items-center z-20">
-      <div className="bg-white px-8 py-6 w-fit rounded-3xl flex flex-col justify-center items-center">
+    <div className="fixed w-full h-full top-0 left-0 transition-all bg-black/50 flex items-center justify-center z-20">
+      <div className="w-[90%] max-w-[530px] min-h-[261px] px-8 pt-4 pb-7 rounded-[40px] flex flex-col justify-between bg-white">
         <div className="w-full text-center pb-4 border-b border-b-[#B7EC5D]">
           建立簽名檔
         </div>
@@ -136,8 +157,6 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
           </div>
           <canvas
             ref={signCanvasRef}
-            width={660}
-            height={270}
             onTouchStart={startPosition}
             onTouchEnd={finishPosition}
             onTouchCancel={finishPosition}
@@ -151,13 +170,13 @@ const NewSignModal: React.FC<NewSignModalProps> = ({
         </div>
         <div className="grid gap-5 grid-cols-2 mt-10 mb-4">
           <button
-            className="border border-[#808080] px-[84px] py-2 rounded-full"
+            className="border border-[#808080] py-2 rounded-full"
             onClick={closeModal}
           >
             取消
           </button>
           <button
-            className="border border-[#b3b3b3] bg-[#ccc] px-[84px] py-2 rounded-full"
+            className="border border-[#b3b3b3] bg-[#ccc] py-2 rounded-full"
             onClick={saveImg}
           >
             確定

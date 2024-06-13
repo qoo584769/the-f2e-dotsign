@@ -1,7 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { FileContextProvider } from "./store/FileContext";
-
+import CustomAlert from "./components/Alert/CustomAlert";
 import "./App.css";
 
 import HomePage from "./pages/HomePage";
@@ -12,8 +12,9 @@ import NotFonudPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <FileContextProvider>
+        <CustomAlert></CustomAlert>
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}></Route>
           <Route path="/upload" element={<UploadPage></UploadPage>}></Route>
@@ -25,18 +26,8 @@ function App() {
           <Route path="*" element={<NotFonudPage></NotFonudPage>}></Route>
         </Routes>
       </FileContextProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
-}
-{
-  /* <div className="bg-[#333333] w-full h-screen">
-  <Layout>
-    <Navbar></Navbar>
-    <FolderLayout>
-      <FolderList></FolderList>
-    </FolderLayout>
-  </Layout>
-</div> */
 }
 
 export default App;
