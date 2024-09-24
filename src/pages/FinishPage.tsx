@@ -29,7 +29,7 @@ const FinishPage = () => {
           nextPath="none"
           download={download}
         ></FolderList>
-        <div className="flex-grow overflow-hidden mt-5">
+        <div className="2xl:max-h-max xl:max-h-[400px] flex-grow overflow-hidden mt-5">
           <div className="bg-[#bbb] absolute left-0 right-0 max-h-[660px] md:relative max-w-[70%] flex flex-col md:h-full items-center m-auto">
             <div className="w-fit p-4 md:p-10 h-full overflow-scroll">
               <img src={completedPDF} alt="" className="block m-auto " />

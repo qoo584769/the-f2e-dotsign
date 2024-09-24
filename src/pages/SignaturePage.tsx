@@ -310,7 +310,7 @@ const SignaturePage = () => {
           finalPDF={finalPDF}
         ></FolderList>
 
-        <div className="md:flex-grow grid grid-rows-1 grid-cols-12 md:gap-x-5 overflow-hidden">
+        <div className="2xl:max-h-max xl:max-h-[400px] md:flex-grow  grid grid-rows-1 grid-cols-12 md:gap-x-5 overflow-hidden">
           {/* PC版 */}
           <div className="hidden border-r-2 border-[rgb(183,236,93)] md:col-span-3 pr-5 md:flex flex-col overflow-hidden">
             {/* 選擇工具 */}
