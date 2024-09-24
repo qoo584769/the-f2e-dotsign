@@ -154,10 +154,10 @@ const UploadPage = () => {
           next={uploaded}
           nextPath="signature"
         ></FolderList>
-        <div className="w-full pt-5 pb-16 md:p-7 flex-grow flex justify-center items-center">
+        <div className="w-full overflow-y-scroll pt-5 pb-16 md:p-7 flex-grow flex justify-center items-center">
           {uploaded ? (
-            <div className=" w-full h-fit flex flex-col justify-center items-center ">
-              <div className="relative">
+            <div className="w-full 2xl:max-h-max 2xl:pt-0 xl:max-h-[300px] xl:pt-[150px] flex flex-col justify-center items-center ">
+              <div className="relative ">
                 {isHover ? (
                   <img
                     src={closeIcon_h}
@@ -179,7 +179,7 @@ const UploadPage = () => {
 
               <span className="mt-6">{uploadInfo?.file?.name}</span>
               <span className="mt-1">{uploadInfo?.totalPages}頁</span>
-              <label htmlFor="fileName" className="mt-10">
+              <label htmlFor="fileName" className="mt-6">
                 專案名稱
               </label>
               <p className="w-full md:w-fit mt-2 pl-6 flex border border-[#4d4d4d] rounded-full">
